@@ -8,3 +8,18 @@ TP se prueba en el laboratorio de medrano
 Se promociona con 8 y 8 o 8 y 7 + complemento
 Hay un coloquio de promoción obligatorio con preguntas teoricas (de razonamiento)
 Dudas del TP: sábados en campus o por discord
+
+---------------------------
+
+Interrupciones
+Ciclos de instrucciones
+Registros (psw, sp, ip, cx, bx, ax, mmx)
+Arquitectura de Von Neumann
+interrupciones síncronas = excepciones = generadas por el procesador
+interrupciones enmascarables = no se atienden si están deshabilitadas (no son de máxima prioridad)
+Teclado tiene prioridad 1 (máxima prioridad)
+Si hay una rutina de interupcion ejkecutandose y ocurre una interrupcion más prioritaria, se pausa la actual para seguir la prioridad
+Pipelining
+HyperThreading (Intel)
+
+Vemos los drivers como si fueran parte del Kernel
