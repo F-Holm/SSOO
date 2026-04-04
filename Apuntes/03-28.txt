@@ -11,6 +11,7 @@ Dudas del TP: sábados en campus o por discord
 
 ---------------------------
 
+Overhead = procesamiento extra innecesario
 Interrupciones
 Ciclos de instrucciones
 Registros (psw, sp, ip, cx, bx, ax, mmx)

@@ -1,0 +1,104 @@
+
+Cuestionario:
+
+1) Las interrupciones se atienden al final de la ejecucion de la instruccion actual
+
+2) Cuando se solicita una operacion de Entrada/Salida se detiene la ejecucion pero no por una interrupcion, sino que es porque espera a la respuesta de esa syscall
+
+3) Atender una interrupción siempre cambia a modo kernel pero si ya se está en ese modo no se realiza el cambio de modo (interrupciones anidadas: llega una interrupicon mas prioritaria cuando estoy en modo kernel tratando una interrupcion)
+
+4) CLI es una instraccuion que deshabilita las interrupciones, cuando se ejecuta se cambia el bin de IF (Interrupt Flag) en el PSW si está en modo kernel, pero si está en modo usuario lanza una excepción
+
+5) CPU sabe cual lugar de memoria es permitido y cual no según el modo de ejecución
+   Fin de quantum no es sincrónica
+
+6) Wrappers: no brindan flexibilidad
+
+7) Microkernel vs Monolítico
+   Microkernel tiene mayor complejidad, muchos cambios de modo y compatibilidad (distintos sistemas de archivos)
+
+interrupciones sincronicas != excepciones
+interrupciones sincronicas == excepciones en esta materia
+
+Todas las interrupciones no enmascarables son de máxima prioridad
+
+Un cambio de cotexto no siempre implica un cambio de modo pero un cambio de modo siempre implica un cambio de contexto
+Si paso de una interrupcion a otra hay cambio de contexto pero no cambio de modo (ya está en modo kernel)
+
+--- Fin cuastionario e inicio de clase ---
+
+Multithreading programming
+
+El programa es una entidad pasiva y el proceso activa
+Proceso = Tarea (término antiguo)
+
+Concurrencia: Compartir recursos (múltiples colas para un procesador). Simula paralelismo
+Paralelismo: Cada cola tiene su procesador
+
+Imagen del proceso = Memoria utilizada por el proceso
+Memoria:
+- stack
+- heap
+- datos: constantes globales
+- código
+
+PCB (Process Control Block):
+- ID
+- Estado del proceso
+- Instruction Pointer/Program Counter
+- Registros de la CPU
+- Información de planificación
+- Información de gestión de memoria
+- Información contable
+- Información de estado de E/S
+- Punteros
+
+Modelo de 5 Estados:
+
+new -> ready <-> running -> terminated
+        ^- waiting <|
+
+- new     -> ready:      admitted
+- ready   -> running:    scheduler dispatch
+- running -> ready:      interrupt
+- running -> waiting:    I/O or event wait
+- waiting -> ready:      I/O or event completition
+- running -> terminated: exit
+
+Modelo de 7 estados:
+
+Suspendido <-> En memoria permanente
+
+- en espera            -> suspendido en espera: lo manda al swap
+- suspendido en espera -> en espera             lo manda al swap
+- suspendido listo     -> listo:                vuelve a la MP
+- listo                -> suspendido listo     proceso admitido pero suspendido por falta de memoria ram
+
+Los SO suelen tener más estados, estos son los mínimos indispensables
+
+Planificador de corto plazo (listo -> ejecución): 
+
+Existen 3/4 tipos de planificaciones: 
+- Extra largo plazo
+- Largo plaxo
+- Mediano plazo
+- Corto plazo
+
+El cambio de contexto puede tener como objetivo:
+- Ejecutar otro proceso
+- Atender una interrupción (ejecutará el interrupt handler)
+- Ejecutar una syscall
+
+Cuando hay un cambio de contexto se guarda en la PCB del proceso actual y se cargan los datos de la PCB del otro proceso
+La PCB permite guardar información para realizar cambios de estados sin problemas
+1 cambio de proceso involucra 2 cambios de proceso: se guarda el contexto del proceso y se restaura el de otro
+2 cambios de contexto no siempre ?
+1 cambio de modo es un cambio de contexto
+1 cambio de contexto no siempre es un cambio de modo (si ya está en modo kernel, no necesita cambiar a modo kernel)
+
+fork crea una copia del proceso padre
+tienen distintos PID
+El hijo tiene como PPID el PID del padre
+Muere el padre -> Muere el hijo
+Pueden compartir memoria en el heap
+Puede haber pasos de mensajes entre procesos (tp0 sockets)
