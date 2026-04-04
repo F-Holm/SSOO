@@ -13,3 +13,4 @@ Makefile text
 *.mk     text
 
 # Binary
+*.pdf    binary
