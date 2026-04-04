@@ -102,3 +102,48 @@ El hijo tiene como PPID el PID del padre
 Muere el padre -> Muere el hijo
 Pueden compartir memoria en el heap
 Puede haber pasos de mensajes entre procesos (tp0 sockets)
+
+Planificacion de procesos son el conjunto de políticas y mecanismos del SO que gobiernan el orden en que se ejecutan los procesos
+Es un módulo del SO que se encarga de mover los procesos entre las ditintas colas de planificación
+La ejecución de un proceso consiste en una alternancia entre ráfagas de CPU y ráfagas de E/S
+
+Control ael grado de multiprogramación del sistema:
+- bajo grado: cpu ociosa
+- alto grado: cpu no ociosa, menor % de cpu en cada proceso
+
+El planificador de corto plazo se encarga de determinar el cambio de estado de listo a ejecutando
+Los algoritmos de planificacion de corto plazo se dividen con con desalojo y sin desalojo
+- Con desalojo: ?
+- Sin desalojo: ?
+
+Hay ráfagas de cpu e E/S
+No se puede saber el largo de una ráfaga pero se puede estimar
+
+Algoritmos:
+FIFO: First in First out
+  un proceso largo puede llevarse todo el tiempo de procesamiento sin tener en cuenta duracion ni prioridad, solo orden de llegada
+  Es sin desalojo
+SJF: Shortest Job First
+  sin desalogo: se elige el proceso con menor tienpo restante
+  con desalojo: si llega un procceso más corto que el restante de ráfaga actual, se detiene y se inicia la nueva ráfaga
+  Puede producir Starvation cuando no paran de llegar proecsos con ráfagas más cortas
+SJF con estimación:
+  Est(n+1) = k*R(n) + (1-k)*Est(n) ; 0 <= k <= 1
+  Est(x) = duracion de ráfaga estimado de x
+  R(x) = duracion de la ráfaga de x
+Prioridades: puede ser con o sin desalojo
+  Usa el envegecimiento (aging) para evitar starvation
+HRRN: Highest Response Ratio Next
+  con o sin desalojo (suele ser sin desalojo)
+  mucho overhead
+  es una adaptación de un SJF sin inanición
+  RR = (S + W) / S = 1 + W/S
+    S = Duración de la prócima ráfaga
+    W = Tiempo de espera en READY
+RR: Round Robin
+  Quantum = cantidad máxima de tiempo
+  Siempre con desalojo
+  si hay n procesos en la cola de listos y el cuantum es q, ningun proceso espera más de q*(n-1) unidades de tiempo
+  No minimiza el tiempo de espera, lo hace previsible
+  Un quantum demasiado grande se comporta como FIFO
+  Si el quantum es demasiado chico hay overhead
