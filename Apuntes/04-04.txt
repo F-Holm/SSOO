@@ -131,6 +131,8 @@ SJF con estimación:
   Est(n+1) = k*R(n) + (1-k)*Est(n) ; 0 <= k <= 1
   Est(x) = duracion de ráfaga estimado de x
   R(x) = duracion de la ráfaga de x
+  Restar 1 a la Estimación después de cada ejecución hasta terminar la ráfaga o llegar a 0 (máxima)
+  Siempre dan como dato la estimación inicial o los datos para calcularla (ráfaga anterior y estimacion anterior)
 Prioridades: puede ser con o sin desalojo
   Usa el envegecimiento (aging) para evitar starvation
 HRRN: Highest Response Ratio Next
@@ -147,3 +149,5 @@ RR: Round Robin
   No minimiza el tiempo de espera, lo hace previsible
   Un quantum demasiado grande se comporta como FIFO
   Si el quantum es demasiado chico hay overhead
+
+Cuando hay empate por FIFO, el que estaba en cpu siempre tiene prioridad

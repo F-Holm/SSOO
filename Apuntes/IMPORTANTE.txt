@@ -1,0 +1,1 @@
+Llevar template de ejercicio de planificación de al menos 30 tiempos, 8 procesos/hilos, tabla de datos de entrada y espacio para múltiples colas (5+)

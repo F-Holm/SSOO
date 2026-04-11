@@ -1,0 +1,89 @@
+Multithreading programming
+
+Hilo = Unidad básica de utilización de la cpu
+- Comparte el código, los datos y los recursos con sus hilos pares
+- Un proceso está formado por uno o más hilos de ejecución
+- Cada hilo es administrado por un TCB (Thread Control Block)
+- Permiten paralelismo dentro de un proceso o aplicación
+- Al compartir recursos, pueden comunicarse sin usar ningún mecanismo de comunicación inter-proceso del SO
+- No hay protección entre hilos. Un hilo puede escribir en la pila de otro hilo del mismo proceso
+
+Hilos vs procesos
+
+- Permiten la comunicacion privada entre varios hilos del mismo proceso, sin intervencion del SO
+- Mayor eficiencia en el cambio de un hilo a otro, que de un proceso a otro
+- Mayor eficiencia en la creacion de un hilo que en la creacion de un proceso hijo
+- Cuando un proceso muere, todos sus hilos también, pues los recursos de proceso son liberados por el SO
+- Un proceso multihilo podría recuperarse de la muerte de un hilo, pues conoce los efector de esta y toma
+ un espacio de memoria (excepto para el main). Sin embargo, también puede llegar a afectar al resto del
+ proceso debido a que comparten recursos
+- En contrapartida, la muerte de un proceso no afecta al resto de los procesos pares
+
+Es más ligero y eficiente crear un hilo a un proceso al no tener que copiar toda la imagen del proceso
+Solo tiene que crear una nueva TCB y ampliar ligeramente la imagen del proceso
+
+Estado de un hilo:
+
+- cuando cualquiera de los hilos está en estadp "Ejecutando", el estado del proceso será "Ejecutando"
+- Si ningún hilo está en "Ejecutando" y alguno está en "Listo", el estado de p será "Listo"
+- El estado del proceso es "Bloqueado" solo si todos sus hilos están en estado "Bloqueado"
+
+#include <pthread.h>
+pthread_t hilo;
+int iret;
+pthread_create(&hilo, NULL, función, parámetro);
+pthread_join(hilo, &iret);
+pthread_detach(hilo);
+
+KLTs: Kernel Level Threads
+- El SO conoce de su existencia y controla su ejecución
+
+ULTs: User Level Threads
+- Su gestión es realizada por bibliotecas en modo usuario, y por lo tanto, el SO no sabe de la existencia
+de estos hilos
+Características:
+- Realizan la conmutación de contexto aún más rápidamente
+- No permiten paralelismo entre hilos pares
+- Implementan su propia planificación
+Ventajas:
+- Bajo overhead
+- Portabilidad
+- Cambios de hilo más "livianos"
+Desventajas:
+- No permite paralelismo entre hilos pares
+- Cuando uno de ellos realiza una operación bloqueante (Ej: E/S), sus hilos pares no pueden continuar
+Solución: Jacketing: Ejecuta las operacion de E/S de forma no bloqueante
+
+Cuando uso ULTs, cuando hago una syscall bloqueante, no ocurre una replanificación y sigue el mismo ULTs,
+ pero si se usa un wrapper de la syscall dada por la biblioteca de ULTs se guarda el contexto antes del
+ bloqueo y se replanifica al finalizar la syscall
+Casi siempre se usan los wrappers en vez de los syscalls cuando se utilizan ULTs
+
+VRR: Virtual Round Robin
+- Es un algoritmo de colas multinivel
+- No tiene starvation (algo común en los algoritmos de colas multinivel)
+- Viene para solucionar  el problema de RR con las ráfagas chicas
+- Tiene una cola de READY de quantum fijo Q
+- Tiene una cola de READY de mayor prioridad de quantum variable Q'
+- Es un RR normal de Q constante hasta que a una ráfaga termina antes de que termine el quantum
+- Cuando eso sucede, cuando termine el estado bloqueado es llevado a la cola de mayor prioridad
+- Q' = Q - ráfaga -> la ráfaga siguiente a la que finalizó antes de tiempo, se ejecuta el tiempo
+ necesario para finalizar el quantum una vez que se desbloquea
+- No tiene desalojo por prioridad de la cola
+
+CMN: Colas Multinivel
+EJ:
+- 1° Cola: procesos del sistema
+- 2° Cola: procesos de usuarios
+- 3° Cola: procesos de tipo R
+- Puede generar Starvation/Inanición
+- Se pueden definir timers para que cuando un proceso de una cola lleva mucho tiempo en ready,
+ lo puede subir de cola. Esto se llama CMN Retroalimentado
+- Puede haber desalojo entre algunas, todas o ninguna cola
+
+Cosas a tener en cuanta al pensar que algoritmo usar:
+- El numero de colas
+- El algoritmo de planificación de cada cola
+- A que cola llegarán los procesos nuevos
+- Criterio para pasar de una cola a la otra (cambio de prioridad)
+- El algoritmo entre colas es con o sin desalojo

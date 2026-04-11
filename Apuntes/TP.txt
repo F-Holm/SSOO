@@ -1,0 +1,9 @@
+Para el servidor multihilo hacer un:
+
+while(true){
+    accept(socket)
+    pthread_create(thread, recv(socket))
+}
+
+los sockets son bidireccionales
+minimizar la cantidad de servidores
