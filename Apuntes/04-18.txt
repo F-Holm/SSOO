@@ -88,3 +88,65 @@ Herencia de prioridades:
 - El que tiene el semáforo, se le va a asignar la prioridad más alta de la lista de espera al recurso
 - Cuando termina le vuelve a poner su prioridad normal
 - Bloquea el mutex el hilo con mayor prioridad
+
+Ej: semáforos
+mutexA = 1;
+signal(mutexA);
+wait(mutexA);
+
+Ej: BACA BACA
+
+a
+b
+c
+mutexA = 0
+mutexB = 1
+mutexC = 0
+mutexBoC = 0
+
+A:
+wait(mutexA)
+printf("A")
+signal(mutexBoC)
+
+B:
+wait(mutexB)
+wait(mutexBoC)
+ptinrf("B")
+signal(mutexA)
+signal(mutexC)
+
+C:
+wait(mutexC)
+wait(mutexBoC)
+ptinrf("C")
+signal(mutexA)
+signal(mutexB)
+
+Otra solución:
+
+a
+b
+c
+mutexA = 0
+mutexB = 1
+mutexC = 0
+
+A:
+wait(mutexA)
+printf("A")
+signal(mutexB)
+signal(mutexC)
+
+B:
+wait(mutexB)x2
+ptinrf("B")
+signal(mutexA)
+
+C:
+wait(mutexC)x2
+ptinrf("C")
+signal(mutexA)
+
+
+
