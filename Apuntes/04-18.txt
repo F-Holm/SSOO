@@ -1,0 +1,90 @@
+--- Cuestionario repaso
+
+1- La PCB siempre está en ram
+
+2- Cuando se crea un proceso nuevo con Fork, cambia el PID, el parent, el retorno de fork(), etc.
+
+3- 
+
+Si ocurre un cambio de proceso, hay al menos 2 cambios de contexto
+Si ocurre un cambio de proceso, va a ocurrir más de un cambio de modo
+Si ocurre un cambio de contexto, puede no haber cambio de proceso (interrupciones, syscalls, etc.)
+Si ocurre un cambio de modo, hay un cambio de contexto
+Puedo cambiar de contexto sin cambiar de modo
+
+4- Procesos
+
+Al finalizar, liberan sus recursos
+Por defecto, no comparten memoria, incluso con sus padres
+La unidad mínima de planificación son los hilos
+Son más estables y confiables que los hilos
+
+5- Los planificadores a mediano y largo plazo impactan o modifican el grado de multiprogramación
+
+6- El planificador que tiene que tener menos overhead es el de corto plazo
+
+7- El tiempo de espera es el tiempo que está un proceso en la cola de listos
+
+8- FIFO
+No monopolizan la CPU
+Es útil para correr procesos secuenciales
+Minimiza los cambios de contexto
+
+9- SJF
+Minimiza el tiempo de espera promedio
+
+10- HRRN:
+
+11- RR: Lanza una interrupción para desalojar al proceso en ejecución y selecciona al siguiente proceso en LISTO
+
+12- Para un algoritmo de tipo FE}eedBack, no es suficiente saber que tiene 2 colas de planificación y que ambas utilizan RR para poder implementarla
+
+13- Inanición
+SJF
+Pro prioridades
+FeedBack
+
+14- Los ULTs son creados a nivel de usuario sin necesidad de syscalls
+
+15- La creación y switcheo entre ULTs del mismo KLT son más ligeros que entre KLTs
+
+16- Jacketing SIMULA paralelismo
+
+17-
+Los KLTs no tienen que usar todos las mismas
+Si uso syscalls en ULTs, conviene usar los wrappers a los syscalls
+
+18- podrian ser ciertas?
+Por default se bloquea el KLT (a menos que use jacketing)
+Podria bloquearse el KLT y también el procceso asociado
+Podria no bloquearse el KLT si se usa Jacketing
+Al finalizar una operacion bloqueante y se vuelve a ejecutar el mismo ULT (PODRÍA)
+Al finalizar una operacion bloqueante y se vuelve a ejecutar otro ULT (PODRÍA)
+
+19- Si se bloquean todos los ULTs de un KLT, suele devolver la CPU
+
+--- CLASE
+
+Programa thread race condition
+
+Las regiones críticas deben contener operaciones sobre recursos compartidos, deben ser lo más chicsa posibles y deben ser atómicas
+
+Si la seccion crítica es muy chica se puede usar espera activa (pthreads_spinlock_t)
+En el tp se usa mutex (con bloqueo)
+
+3 tipos de semáforos:
+- mutex
+- contador
+- binarios: garantizan un orden de ejecución
+
+semáforo > 0 -> cantidad de recursos disponibles
+semáforo < 0 -> Cantidad de procesos bloqueados esperando
+No se puede inicializar en negativo
+
+Inversión de prioridades: en un mutex puede un proceso de mayor prioridad esperando a un proceso de menor prioridad que
+al tener menor prioridad, puede ser desalojado y con el recurso bloqueado
+
+Herencia de prioridades:
+- El que tiene el semáforo, se le va a asignar la prioridad más alta de la lista de espera al recurso
+- Cuando termina le vuelve a poner su prioridad normal
+- Bloquea el mutex el hilo con mayor prioridad
