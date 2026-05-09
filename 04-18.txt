@@ -147,6 +147,3 @@ C:
 wait(mutexC)x2
 ptinrf("C")
 signal(mutexA)
-
-
-
