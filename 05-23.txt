@@ -1,0 +1,32 @@
+MEMORIA:
+
+ram: ns (nanosegundo)
+ssd: us (microsegundo)
+
+sección de memoria para el kernel
+Suele ser los primeros x bytes de memoria
+
+MMU:
+Dirección física: 
+Dirección lógica: 
+
+Tiempo de compilación: DL == DF
+Tiempo de carga: DL == DF
+Tiempo de ejecución: DL != DF
+
+Requerimientos:
+- realocación
+- protección
+- compartir memoria
+- organización lógica
+- organización física
+
+Particiones fijas: Fragmentacion interna (hay un proceso que le sobra espacio en su partición)
+Particiones dinámicas: Fragmentación externa (Puede que un proceso no entre, se soluciona con la compactación)
+
+First fit
+Next fit?: No se reinicia la posición donde busca luego de cada búsqueda
+Best fit
+Worst fit
+
+Tablas de páginas en paginación simple: Muchos Bytes de overhead
