@@ -1,0 +1,17 @@
+Respuestas de cuestionario
+
+Tabla de páginas invertida:
+- tiene como ventaja sobre la tabla de páginas convencional que al ser una única tabla en el sistema ocupa menos espacio
+- Tiene más desventajas, una es la búsqueda secuecial (se puede soluionar con una tabla de hash)
+- No es compatible con memoria virtual
+
+Clase memoria virtual:
+
+Asignación fija no tiene sentido combinarla con sustitución global
+
+Asignación dinámica con sustitución local:
+- Hay una decisión importante cadav ez que un proceso pide un frame, asignarle más frames o sustituir frames
+- Si se le asigna un nuevo frame siempre, se corre el riesgo que un proceso se lleve más frames de los que debería
+
+No se pueden tener menos Page Faults que el algoritmo más óptimo (ve el futuro, no es implementable)
+LRU suele ser el mejor algoritmo de sustitución de páginas
