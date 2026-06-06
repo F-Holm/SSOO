@@ -1,0 +1,44 @@
+Filesystem
+
+Archivo = Conjunto de datos relacionados etiquetados (solo para los humanos) con un nombre y almacenado en un medio secundario
+
+Para evitar que cada proceso implemente su propio acceso, lectura y escritura de archivos
+
+Cada archivo su FCB (File Control Block): permisos, fechas, dueño, size, bloques de datos
+
+Cuando se corta / mueve / copia un archivo de un disco a otro, tarda mucho porque se pasa a un nuevo filesystem
+
+Los locks permiten regular el aceso a un archivo
+
+Exclusivo: Lock de escritura
+Compartido: Lock de lectura
+
+Pueden ser obligatorios (Windows) o sugeridos (Linux)
+
+- Protección
+
+Acceso total: No se aplica estrategia de protección
+Acceso Prohibido: Solo el propietario puede operar
+Acceso Controlado: Indica quien puede operar y como
+
+Matriz de acceso (usuarios, recursos) -> Permisos
+Tiene mucha mayor granularidad pero desperdicia mucho espacio
+
+ACL (Access Control List): por cada archivo hay una lista de usuarios con sus permisos, ocupa menos espacio que la matriz de arriba
+
+Protección de Linux:
+
+- Organización de datos en disco:
+
+Partición
+  Volumen
+    MBR
+    Volúmenes
+      Bloque de control de arranque de volumen
+      Control de volumen -> Información general del Filesystem para que el SO lo pueda administrar
+      META DATA -> Parcialmente en memoria. Contiene los FCB
+      Archivos
+
+Indexado multinivel
+
+syscall mmap que mapea archivos
