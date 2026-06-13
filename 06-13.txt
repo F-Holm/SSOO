@@ -1,0 +1,78 @@
+Cuestionario de repaso de FileSystem
+
+Que cosas se podrian guardar en la fcb:
+- el nombre no lo tiene
+- ubicacion
+- timestamps de modificacion, ...
+- propietario
+- ACL
+- no tiene los ID de los procesos que los tienen abiertos (Esto está en la tabla de archivos abiertos de cada proceso y en la global)
+- tamaño
+
+En la syscall write se le pasa el path del archivo
+- FALSO: El path es solo para abrir el archivo, hay que pasarle el descriptor de archivo
+
+El FCB siempre va a estar en disco y puede estar en RAM
+
+En una situación de condición de carrera de archivos, se pueden usar mutex pero podría ser más eficiente usar locks
+
++ Granularidad -> + costo de mantenimiento
+granularidad = que tan específico / detallado
+
+El tamaño de bloque determina la cantidad de fragmentación interna
+
+Indexada se permite hacer un acceso casi directo
+No tiene fragmentación interna
+Es fácil encontrar huecos libres
+Si se corrompe el indice, se corrompe todo
+
+FAT:
+
+Asignación enlazada pura modificada:
+Se pierde uno de los bloques, se pierde todo
+No tiene acceso directo a la información
+
+Estos problemas se solucionan con:
+
+Tiene una tabla FTA que tiene las direcciones de los bloques de los archivos
+En FAT: BLOQUE = CLUSTER
+
+Las entradas de directorio son de tamaño fijo
+No tiene FCB
+Existe FAT 12, 16 y 32
+FAT 32 tiene entradas de 32 bits pero puede direcciona 2^28 entradas (reservaron 4 bit para uso futuro y nunca los usaron, en los otros no existen estos 4 bits)
+Los archivos no pueden ocupar más de 4GiB (2^32)
++ tamaño de bloque -> + fragmentación interna
+
+La tabla de FAT está siempre entera en RAM y está 2 veces en disco (para prevenir que se corrompa)
+
+EXT 2:
+
+Existen 1, 2, 3 y 4
+
+SoftLink (accesos directos de linux): Es un archivo (tiene su propio inodo) que contiene la ruta al archivo al que apunte (puede estar en otro FS)
+HardLink: No puede apuntar a otros FS, no tiene inodo, es más eficiente, etc.
+
+Ejercicios:
+
+2:
+  a: 2^12 * 8 kiB = 2^10 * 2^10 * 2^2 * 2^3 B = 2^25 B = 32 MiB
+  b: 32 kiB
+  c:
+    1:
+    2:
+
+3:
+  a: 8 GiB / 4 kiB = 2 MiB
+  b: 2 * Tfat * 100% / Tdisco = 100% * 2 * 2^23 / 2^33 = 100% / 2^9 = 0.1953 %
+  c: 32 b - log2(2 MiB) - 4(reservados por FAT 32) = 32 - 21 = 7 b
+
+4:
+  a: 4 GiB / 2^16 = 2^(32 - 16) B = 64 KiB
+  b: 64 kiB, 64 kiB y 16 bloques
+  c:
+
+7:
+  a: 
+  b: 
+  c: sumatoria (TC * CPi * CPb ^ produndidad) = 16 GiB + 54 MiB + 256 kiB + 12 kiB
