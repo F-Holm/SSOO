@@ -1,0 +1,85 @@
+La memoria ram es un gran vector de bytes
+
+La memoria está dividida en el espacio para el Kernel y el espacio para el modo Usuario
+
+Tiempo de compilación: DL == DF -> Sistemas monoprogramados
+Tiempo de carga: DL == DF
+Tiempo de ejecución: DL != DF -> Usando la MMU, lo más normal hoy en día
+
+El sistema debe satisfacer:
+- Realocación
+- Protección
+- Compartir memoria
+- Organización lógica
+- Organización física
+
+Asignación continua:
+- Base + DL | DL < límite
+- Para tener memoria compartida en este esquema se modifican las bases para que las memoria de los procesos estén solapadas (Solo lo necesario, no es necesario que estén totalmente solapadas)
+- Es complicado compartir memoria
+
+Asignación continua - Particiones fijas:
+- Fregmentación externa = huecos pequeños en memoria
+
+Algoritmos de selección de huecos:
+- Primer ajuste
+- Siguiente ajuste
+- Mejor ajuste
+- Peor ajuste -> Si tengo los huecos orgenados por tamaño, es el más rápido porque siempre lo mete en el primero (si entra)
+
+Asignación continua - Particiones dinámicas:
+- Se divide la memoria en N particiones de tamaño fijo
+- Un proceso no puede se más grande que el tamaño de una partición
+- Fragmentación interna = espacio que sobre dentro de una partición
+- Limita artificialmente el grado de multiprogramación al limitar la cantidad de procesos con una cantidad de particiones fijas
+
+Segmentación:
+- Segmento de código
+- Segmento de datos
+- Segmento de pila
+- Tiene fragmentación externa
+- Cada segmento puede presentar distintos permisos (R, W, X)
+- Si tengo 2 procesos iguales, tienen el mismo segmento de código y ese segmento es read-only. Pueden compartir el segmento y evitar el duplicado
+- La dirección lódiga está compuesta por número de segmento + desplazamiento
+- Es muy fácil compartir memoria
+- Hay una tabla de segmentos por proceso cargada en la MMU
+
+Paginación simple:
+- Tamaño de página = Tamaño de marco
+- Genera fragmentación interna
+- Divido los procesos en páginas
+- Divido las MP en frames
+- Tiene tabla de páginas: hay un número de marco y un bool de validez (si se encuencha dentro del espacio de direccionamiento) por página
+- La tabla tiene una cantidad fija dem elementos que tienen el bit de validez en 0 si no le pertenecen al proceso
+- Para administrar los marcos libres, se usa un bitmap [0, 1, 1, 0, ...]
+- Tabla de páginas siempre en memoria
+- PTBR es el puntero a la tabla de páginas del proceso en ejecución
+- TLB = Translation Look-aside Buffer => se usa cuando tenfo 1 DF y 2 accesos a memoria. Es una memoria asociativa de alta velocidad (Cachpe HW)
+- La TLB guarda elementos de la tabla de página para agilizar el proceso de traducción y acceso efectivo a memoria
+- Lo mejor de paginación: pueed tener protección agregando los bits de RWX y se pueden compartir páginas
+
+Paginación jerárquica (Paginación multinivel):
+- Soluciona el problema de necesitar tablas de páginas enormes innecesariamente
+- Paginar la tabla de páginas
+- Existe una tabla de primer nivel
+- Existen n tablas de segundo nivel
+- Existen m paginas de tercer nivel
+- ...
+- Hay que definir cuantos niveles hay (En los procesadores modernos se usan 3 niveles)
+- Implica más accesos a memoria
+
+Paginación con tabla invertida:
+- Hay una tabla para todo el sistema en lugar de una por proceso
+- Ocupa muy poco espacio
+- No se suele usar
+- Está indexada por marco en lugar de página
+- El valor me dice que página de que proceso se encuentra en dicho marco
+- Existe una variante que usa una tabla hash
+- Búsqueda secuencial/lineal
+- Difícil de compartir memoria o usar memoria virtual
+- Cada elemento de la tabla tiene PID y número de página
+
+Segmentación paginada:
+- Cada segmento tiene su tabla de páginas
+- DL = Segmento Página Word
+- Puede ser multinivel
