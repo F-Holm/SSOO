@@ -1,0 +1,45 @@
+Antes se dividian los programas en overlays qe se descargaban y cargaban en ram manualmente
+
+Paginación bajo demanda:
+- El proceso está en swasp y solo se pasa a ram las páginas necesarias
+- Hay bit de presencia (si está en ram) y bit de modificado (si fue modificado)
+- El swapping es lazy, no mueve procesos, solo páginas
+- Si Presencia = 0 => Interrupción sincrónica por fallo de página (PAGE FAULT)
+- Paginación siempre tiene un bit map / array para ver que frames están libres
+- Si no hay marcos libres, hay que elegir una víctima (guardar los cambios de la víctima si el bit de modificado = 1)
+
+Políticas de asignación/sustitución de frames:
+- Asignación fija: cantidad de frames de un proceso es constante (hablo de frames, no páginas)
+- Asignación dinámica: cantida de frames de un proceso puede variar
+- Sustitución local: las víctima debe ser un frame asignado al mismo proceso
+- Sustitución global: puede elegir como víctima a cualquier frfame de cualquier proceso
+
+Algoritmos de sustitución de páginas:
+- FIFO: Sufre Anomalía de Belady
+- ÓPTIMO: Solo se usa con fines comparativos, no se puede implementar
+- LRU: No sufre Anomalía de Belady
+- CLOCK: cola circular. Bit de uso (U): 0 = víctima, 1 = se salva y pasa al siguiente frame y U = 0
+- CLOCK MODIFICADO: Tiene bit de mofidicado (M)
+
+Anomalía de Belady: + frames => + PF
+
+Thrashing / sobrepaginación:
+No poder ejecutar porque no alcanzan los frames.
+Ej: instruccion op1 op2 donde cada uno está en una página distinta
+- sustitucion local y asignación fija: Se puede generar un ciclo infinito de PF
+- Sustitución global y asignación dinámica: El so detecta bajo uso de cpu y aumenta el grado de multiprogramación.
+Los nuevos procesos necesitan frames y se entra en un ciclo de aumentar el grado de multiprogramación y más robos
+de frames entre procesos (PF)
+
+Formas de evitar el Thrashing:
+- Se puede evitar analizando la frecuencia de page faults, si hay muchos page faults hay que
+disminuir el grado de multiprogramación
+- El conjunto de trabajo (lo que necesita el proceso en ese momento) (se calcula con la localidad
+(conjunto de páginas referenciadas activamente)) debe entrar en los frames disponibles
+
+Lockeo de páginas: para evityar que se suspenda una página necesaria para una operación de IO,
+se bloquea para que no se pueda suspender
+
+Page buffering: se mantiene una pool de frames libres. Si se necesitan 3 frames para una operación como el
+ejemplo de antes, se puede usar un espacio del pool para hacer la operación y luego de la operación se libera
+el frame según el criterio establecido para mantener la pool de frames libres
