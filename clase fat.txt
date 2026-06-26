@@ -1,0 +1,29 @@
+Usa asignación enlazada
+
+Tabla FAT:
+- Contiene los punteros a los bloques
+- Está siempre en memoria
+
+Solo tienen un acceso a disco y n accesos a memoria, siendo n el número de bloque
+
+La FAT se guarda al inicio del File System y tiene duplicado para evitar problemas
+
+bloque = cluster
+
+No usa FCB, la información administratuva de los archivos se guarda en las entradas de directorio
+
+Para obtener un bloque libre se recorre la tabla
+
+Volumen:
+- Sector de arranque
+- FAT + copia
+- Directorio raíz
+- Datos (Archivos + subdirectorios)
+
+Existen FAT12, FAT16 y FAT32 (Es como si fuera FAT28 pero puede tener archivos de 4 GB)
+
+Las entradas de directorio son de tamaño fijo, lo que limita el tamaño máximo de archivo.
+En FAT32 hay 32 bits para guardar el tamaño del archivo, no puede ser más grande que 4 GB
+
+Tamaño FAT = cant_entradas * tam_entrada
+Tam máx teórico Arch/FS = 2^tam_entrada * tam_cluster
