@@ -1,0 +1,140 @@
+Objetivos:
+- Almacenar datos y poder operar con ellos
+- Garantizar (en lo posible) la integridad de los datos
+- Optimizar desempeño:
+  + Usuarios: tiempo de respuesta
+  + Sistema: aprovechamiento de los recursos
+- Proveer soporte para distintos tipos de almacenamiento
+- Minimizar o eliminar la pérdida o destrucción potencial de datos
+- Proveer una interfaz estandarizada para procesos de usuario
+- Soporte para múltiples usuarios
+
+Archivo:
+- Conjunto de datos relacionados etiquetados con un nombre y almacenados en un medio secundario
+- Existencia de larga duración
+- Compartible entre procesos
+- Estructura
+
+FCB (File Control BLock):
+- permisos
+- Fechas (creado, accedido y editado)
+- dueño / grupo / ACL
+- tamaño
+- file data blocks o punteros a punteros a estos
+No contiene nombre
+
+Directorio:
+- Archivo que contiene un listado de nombres de archivos (los directorios son archivos) y sus atributos asociados
+- Permite realizar el mapero entre los nombres de los archivos (conocidos por usuarios y aplicaiones) y los archivos
+
+Se puede implementar como:
+- Un nivel
+- Dos niveles
+- Árbol: Es un caso especial de un grafo acíclico donde todos los nodos están conectados
+- Grafo acíclico: es lo más normal, permite que un archivo solo tenga una ruta
+- Grafo general
+
+- Lista lineal
+- Lista enlazada ordenada
+- Árbol-B
+- Tabla de hash
+
+Operaciones sobre archivo:
+- Crear
+- Eliminar
+- Abrir
+- Cerrar
+- Leer / Escribir
+- Posicionar punteor (seek)
+- Truncar
+Operaciones compuestas:
+- Copiar
+- Mover
+- Rename
+
+Locks:
+- Permiten regular el acceso a un archivo
+- Evita que un proceso lea información desactualizada
+- Mantiene la integridad de los archivos
+- Existen 2 tipos:
+  + Exclusivo (lock de escritura): un proceso puede tomarlo a la vez
+  + Compartido (lock de lectura): Muchos procesos pueden tomarlos al
+  mismo tiempo peor no al mismo tiempo que un lock exclusivo
+- Formas de implementarlos:
+  + Obligatorio: El SO asegura que ningun otro proceso va a poder usar el archivo a menos que cumpla con el lock.
+  Los archivos suelen estar más tiempo bloqueados, lo que perjudica al rendimiento al aumentar el tiempo de espera
+  + Sugerido: El SO brinda informacion sobre el estado de los locks
+  pero es responsabilidad del progrtamador de garantizar su integridad
+
+Tablas:
+- Tabla global de archivos abiertos
+  + FCB
+  + Cantidad de procesos que lo tienen abierto
+- Tabla de archivos abiertos por proceso
+  + Modo apertura
+  + Que archivo
+  + En que modo
+
+Protección:
+- Acceso total: no se aplica ninguna estrategia de proteccion
+- Acceso prohibido: solo el propietario puede operar
+- Acceso controlado: indica quien puede operar y cómo:
+  + Propietario | Grupo | Universo. Linux: File Type | RWX | RWX | RWX
+  + Matriz de acceso (usuario | recurso), en cada celda tiene un bit que indica si tiene permiso
+  + ACL (Access Control List): por cada archivo hay una lista de usuarios con permisos. Es más específico que
+  el primer caso y ocupa menos espacio que el segundo
+
+En linux, esto significan los permisos para los directorios: R = ls | W = modificar el contenido | X = cd
+chmod 777 archivo  Los 3 números son en octal
+
+Se puede combinar Propietario | Grupo | Universo con ACL (lista de excepciones)
+
+Archivos mapeados en memoria:
+- Objetivo: Tratar las E/S de archivo como si fueran accesos a memoria
+- Asociar lógicamente con el archivo una parte del espacio virtual de direcciones del proceso
+- Cada bloque de disco se mapea con una página de memoria (la relacion puede no ser 1:1)
+- Una vez cargada la página, las subsiguientes lecturas y escrituras en el archivo se gestionarán
+como accesos normales de memoria
+
+Organización de datos en disco:
+
+Disco:
+- MBR
+- Volumen:
+  + Bloque de control de arranque del volumen
+  + Control de volumen: siempre en memoria
+  + META-DATA: FCBs
+  + Archivos
+
+Asignación de espacio en disco a archivos
+- Archivo -> Bloques lógicos -> Sectores (suelen ser más chicos que los bloques lógicos)
+- El tamaño del bloque lógico suele ser un múltiplo del tamaño de sector
+
+Métodos de acceso:
+- Secuencial
+- Directo
+- Indezado
+- Hashed
+
+Asignación de bloques:
+Todos tienen fragmentación interna
+- Contigua: Muchas fragmentación externa
+- Enlazada / Encadenada: Es muy malo para acceso directo, espacio usado por punteros,
+se corrompe un puntero = perdida de información
+- Indexada: siemrpe son 2 accesos pero limita el tamaño máximo del archivo, duplica la
+fragmentación interna y espacio ocupado por punteros. Se pueden enlazar bloques de indices
+para archivos muy grandes. También se pueden usar índices multinivel o combinado
+
+Como se que bloques estan libres:
+- bit vector
+- bloques libres enlazados
+- lista de bloques continuos
+- bloques libres indexados
+- lista de bloques
+
+Journaling:
+- La información suele estar más actualizada en memoria que en disco
+- Un fallo en el sistema puede generar inconsistencias
+- Se hace un registro para poder ver el historial de cambios y poder revertirlos
+- Se hacen commits entre operaciones, si hay algún fallo, se revierten todas las
+operaciones hasta llegar al último commit
