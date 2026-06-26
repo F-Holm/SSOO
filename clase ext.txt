@@ -1,0 +1,51 @@
+Toma como base el esquema indexado
+
+Llama inodo al FCB
+
+inodo:
+- mode
+- owners
+- timestamps
+- size block
+- size block
+- count
+- direct blocks: punteros directos a bloques de datos (suelen ser 12)
+- single indirect: Apunta a un bloque de punteros a bloques
+- double indirect: Apunta a un bloque de punteros a bloques de punteros a bloques
+- triple indirect: Apunta a un bloque de punteros a bloques de punteros a bloques de punteros a bloques
+
+Estructura:
+- Sector de arranque
+- grupo de bloques 0
+- grupo de bloques 1
+- ...
+- grupo de bloques n-1
+
+Grupo de bloques:
+- Super bloque: es igual en todos los grupos
+  + Total inodos
+  + Total bloques
+  + Total bloques libres
+  + Total inodos libres
+  + Tamaño de bloque
+  + Tamaño de inodo
+- Descriptores de grupo (n bloques): bitmap daots, bitmap inodos, bloques libres en grupo, inodos libres en grupo
+- Bitmap bloques datos
+- Bitmap inodos
+- Tabla de inodos
+- Bloques de datos
+
+Es importantísimo saber bien la estructura
+
+Directorio:
+- direccion inodo
+- tamaño de la entrada
+- tamaño del archivo
+- nombre
+
+Tipos de archivos:
+- Regular
+- Directorio
+- Links:
+  + Soft/Symbolic Links: Acceso directo, archivo independiente, puede realizarse entre distintos FS. Solo contiene el path de otro archivo
+  + HardLinks: Existe un único archivo con uno o más hardlinks. No puede realizarse entre distintos FSs. La referencia apunta al mismo inodo. Es una nueva referencia a un archivo
