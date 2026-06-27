@@ -15,7 +15,8 @@ El sistema debe satisfacer:
 
 Asignación continua:
 - Base + DL | DL < límite
-- Para tener memoria compartida en este esquema se modifican las bases para que las memoria de los procesos estén solapadas (Solo lo necesario, no es necesario que estén totalmente solapadas)
+- Para tener memoria compartida en este esquema se modifican las bases para que las memoria de los procesos
+estén solapadas (Solo lo necesario, no es necesario que estén totalmente solapadas)
 - Es complicado compartir memoria
 
 Asignación continua - Particiones fijas:
