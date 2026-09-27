@@ -37,7 +37,7 @@
   - Un proceso largo se lleva todo el tiempo (no tiene en cuenta duración ni prioridad). Puede monopolizar la CPU
   - No monopolizan en general, útil para procesos secuenciales, minimiza cambios de contexto, overhead bajo
   - Starvation: no (salvo monopolización)
-- **SJF / SPN** (sin desalojo): la ráfaga más corta
+- **SJF / SPN** (sin desalojo): la ráfaga más corta. Prioriza a los IO bound. Mucho overhead (estimar ráfagas)
   - Minimiza el tiempo de espera promedio
   - Starvation si no paran de llegar procesos más cortos
   - Empate → FIFO (el que lleva más en ready)
@@ -53,9 +53,9 @@
 - **HRRN** (Highest Response Ratio Next): RR = (W + S) / S = 1 + W/S
   - W = tiempo esperando en Ready, S = duración de la próxima ráfaga
   - Adaptación de SJF sin inanición (aging implícito). Favorece ráfagas cortas y a los que esperan mucho
-  - Suele ser sin desalojo → puede monopolizar la CPU. Mucho overhead
+  - Suele ser sin desalojo → puede monopolizar la CPU. Mucho overhead. Con desalojo habría que recalcular el ratio de todos los listos en cada evento (muchísimo overhead)
 - **RR** (Round Robin): FIFO + quantum (interrupción de clock), siempre con desalojo
-  - Lanza una interrupción para desalojar al proceso en ejecución y selecciona al siguiente en listos
+  - Al vencer el quantum, el **timer** (programado por el planificador) lanza la interrupción; el SO la atiende y el planificador elige al siguiente en listos (no es el SO el que interrumpe)
   - Con n procesos y quantum q, nadie espera más de q·(n−1)
   - No minimiza la espera, la hace previsible. Equitativo. Sin starvation. Overhead medio
   - Quantum muy grande → FIFO. Muy chico → mucho overhead

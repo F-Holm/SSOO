@@ -2,6 +2,77 @@
 
 ## Teóricos
 
+### [Cuestionario Procesos, Hilos y Planificación (PDF)] ¿Qué partes de la imagen de un proceso deben estar siempre en RAM? (varias opciones)
+Opciones:
+
+- Stack
+- Heap
+- Código
+- Datos
+- PCB
+- Todo debe estar siempre en memoria
+- Ninguno necesita estar siempre en memoria
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **PCB**
+- Comentario de la cátedra: el PCB siempre tiene que estar en memoria porque es la estructura que usa el SO para administrar al proceso en todo momento. El resto de la imagen puede pasarse a swap (suspender el proceso); con memoria virtual se podrá mandar a swap "de a partes".
+
+</details>
+
+### [Cuestionario Procesos, Hilos y Planificación (PDF)] Si un proceso A ejecuta fork() creando un proceso B, inmediatamente luego de la llamada lo único que cambiará en ambas imágenes es el PID
+Opciones:
+
+- Verdadero
+- Falso
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Falso**
+- Comentario de la cátedra: también cambia el resultado de la llamada a fork() (guardado en una variable: en el stack si es local o en datos si es global). Eso permite distinguir si ejecuta el padre o el hijo.
+
+</details>
+
+### [Cuestionario Procesos, Hilos y Planificación (PDF)] ¿Cuáles de las siguientes afirmaciones son correctas? (varias opciones)
+Opciones:
+
+- Si ocurre un cambio de proceso ⇒ va a ocurrir más de un cambio de contexto
+- Si ocurre un cambio de proceso ⇒ va a ocurrir más de un cambio de modo
+- Si ocurre un cambio de contexto ⇒ va a ocurrir un cambio de proceso
+- Si ocurre un cambio de modo ⇒ va a ocurrir un cambio de proceso
+- Si ocurre un cambio de modo ⇒ va a ocurrir un cambio de contexto
+- Si ocurre un cambio de contexto ⇒ va a ocurrir un cambio de modo
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Correctas**: cambio de proceso ⇒ más de un cambio de contexto; cambio de proceso ⇒ más de un cambio de modo; cambio de modo ⇒ cambio de contexto
+- Comentario de la cátedra: al cambiar de proceso ejecuta en el medio el planificador: usuario → kernel → usuario, y en cada paso cambia el contexto. No es cierto que cambiar de contexto implique cambiar de modo (interrupción anidada: ya está en kernel), ni que cambiar de contexto o de modo implique cambiar de proceso (una syscall, o atender una interrupción y volver al mismo proceso).
+
+</details>
+
+### [Cuestionario Procesos, Hilos y Planificación (PDF)] ¿Cuáles de las siguientes afirmaciones sobre procesos son FALSAS? (varias opciones)
+Opciones:
+
+- Al finalizar, se liberan los recursos que tenía asignados
+- Por default comparten memoria con otros procesos para poder comunicarse
+- Por default comparten memoria con su proceso padre para poder comunicarse
+- Es la mínima unidad de planificación para el SO
+- Posee un PCB que siempre debe estar en RAM
+- Pueden comunicarse con otros procesos con paso de mensajes
+- Son menos estables y seguros que los hilos (KLTs)
+- Ninguna
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Falsas**: comparten memoria con otros procesos por default; comparten memoria con su padre por default; es la mínima unidad de planificación; son menos estables y seguros que los KLTs
+- Comentario de la cátedra: los procesos son independientes: no comparten memoria de forma inherente (hace falta memoria compartida vía syscall o paso de mensajes). Al finalizar el SO libera sus recursos. El PCB siempre está en memoria aunque el proceso esté suspendido. Por su aislamiento son más estables y seguros que los KLTs del mismo proceso. La mínima unidad de planificación (si el SO soporta hilos) es el KLT.
+
+</details>
+
 ### [Resumen] ¿Quiénes pueden crear o finalizar procesos? ¿Cómo? ¿Qué le pasa al hijo si el padre finaliza inesperadamente?
 
 <details>
@@ -32,20 +103,6 @@
 - Susp/Ready → Ready: baja el grado de multiprogramación y se trae un proceso de disco a RAM
 - Ready → Exit: se lo mata sin que estuviera ejecutando
 - Ready → Blocked: no existe
-
-</details>
-
-### [Cuestionario 04-18] Respuestas
-
-<details>
-<summary>Ver respuesta</summary>
-
-- La PCB siempre está en RAM
-- Con fork cambia el PID, el parent (PPID), el retorno de fork(), etc.
-- Si ocurre un cambio de proceso, hay al menos 2 cambios de contexto y más de un cambio de modo
-- Si ocurre un cambio de contexto, puede no haber cambio de proceso (interrupciones, syscalls)
-- Si ocurre un cambio de modo, hay un cambio de contexto. Puedo cambiar de contexto sin cambiar de modo
-- Procesos: al finalizar liberan sus recursos; por defecto no comparten memoria (ni con el padre); la unidad mínima de planificación son los hilos; son más estables y confiables que los hilos
 
 </details>
 

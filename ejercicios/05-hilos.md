@@ -4,6 +4,97 @@ Los prácticos con Gantt de ULTs/KLTs están en [04-planificacion.md](04-planifi
 
 ## Teóricos
 
+### [Cuestionario Procesos, Hilos y Planificación (PDF)] Tanto los procesos como los KLTs y los ULTs son creados a través de syscalls brindadas por el SO
+Opciones:
+
+- Verdadero
+- Falso
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Falso**
+- Comentario de la cátedra: procesos y KLTs se crean con syscalls, pero el SO no conoce a los ULTs: los crean las bibliotecas de ULTs a nivel usuario.
+
+</details>
+
+### [Cuestionario Procesos, Hilos y Planificación (PDF)] La creación y el switcheo entre ULTs del mismo KLT/proceso son más livianos que entre KLTs de un mismo proceso
+Opciones:
+
+- Verdadero
+- Falso
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Verdadero**
+- Comentario de la cátedra: todo ese manejo se hace en modo usuario, sin cambios de modo (el SO no interviene).
+
+</details>
+
+### [Cuestionario Procesos, Hilos y Planificación (PDF)] En un SO que soporta el manejo de hilos, ¿qué planificará el planificador de corto plazo?
+Opciones:
+
+- Procesos
+- KLTs
+- ULTs
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **KLTs**
+- Comentario de la cátedra: si el SO soporta hilos, el KLT es la unidad de planificación de corto plazo; nunca ve a los ULTs. El SO igual lleva el estado de cada proceso en su PCB, pero elige qué ejecutar por KLT.
+
+</details>
+
+### [Cuestionario Procesos, Hilos y Planificación (PDF)] ¿En caso de utilizar jacketing sería lo mismo utilizar ULTs que KLTs?
+Opciones:
+
+- Sí
+- No
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **No**
+- Comentario de la cátedra: el SO sigue sin ver a los ULTs, así que no puede planificarlos (asignarles quantum o ponerlos en distintas CPUs). Jacketing solo evita que el KLT/proceso se bloquee y deja que la biblioteca planifique otro ULT listo.
+
+</details>
+
+### [Cuestionario Procesos, Hilos y Planificación (PDF)] ¿Cuáles de las siguientes afirmaciones son verdaderas sobre planificación con biblioteca de ULTs?
+Opciones:
+
+- Si hay varios KLTs con ULTs, todos los KLTs deben usar la misma biblioteca de ULTs
+- Si decidimos usar ULTs es igual de útil usar directo syscalls (ej: write) que usar los wrappers provistos por la biblioteca
+- Cuando un ULT necesita realizar una E/S se la pide al SO con una syscall. En este caso el SO puede diferenciar cuál ULT la está pidiendo
+- Todas son correctas
+- Ninguna es correcta
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Ninguna es correcta**
+- Comentario de la cátedra: cada KLT puede usar una biblioteca distinta (con distintos criterios); si se llama directo a syscalls bloqueantes, la biblioteca no puede replanificar; el SO no ve a los ULTs: la syscall le llega de un KLT o proceso.
+
+</details>
+
+### [Cuestionario Procesos, Hilos y Planificación (PDF)] Un proceso posee 3 KLTs y cada uno 3 ULTs asociados. Si un ULT necesita hacer una syscall bloqueante (ej: read), ¿cuáles de las siguientes afirmaciones PODRÍAN ser ciertas? (varias opciones)
+Opciones:
+
+- Por default se bloquea el KLT
+- Podría bloquearse el KLT y también el proceso asociado
+- Podría no bloquearse el KLT
+- Al finalizar la operación bloqueante y ser seleccionados nuevamente por el planificador del SO, continúa ejecutando el mismo ULT
+- Al finalizar la operación bloqueante y ser seleccionados nuevamente por el planificador del SO, continúa ejecutando el ULT que seleccione la biblioteca de ULTs
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Todas pueden ser ciertas**
+- Comentario de la cátedra: el SO ve que la syscall viene del KLT, así que lo bloquea; con jacketing el KLT no se bloquea y puede ejecutar otro ULT. Al terminar: si la syscall fue directa, sigue el ULT que la hizo; si fue por el wrapper de la biblioteca, ésta elige el siguiente (podría ser el mismo). Si se bloquea justo el último KLT del proceso, todo el proceso queda bloqueado.
+
+</details>
+
 ### [Resumen] V/F: Usando semáforos en hilos ULT no se requiere cambio de modo para wait/signal
 
 <details>
@@ -98,36 +189,6 @@ Los prácticos con Gantt de ULTs/KLTs están en [04-planificacion.md](04-planifi
 <summary>Ver respuesta</summary>
 
 - **F**. El proceso no se bloquea, pero los ULTs siguen invisibles para el SO (sin paralelismo) y con otra planificación
-
-</details>
-
-### [Cuestionario 04-18] Respuestas
-
-<details>
-<summary>Ver respuesta</summary>
-
-- Los ULTs se crean a nivel usuario sin necesidad de syscalls
-- Crear y switchear ULTs del mismo KLT es más liviano que entre KLTs
-- Jacketing SIMULA paralelismo
-- Los KLTs no tienen que usar todos las mismas bibliotecas; si uso syscalls en ULTs conviene usar los wrappers
-- Si se bloquean todos los ULTs de un KLT, suele devolver la CPU
-
-</details>
-
-### [Cuestionario 04-18] Un ULT realiza una operación bloqueante (E/S). ¿Cuáles de estas afirmaciones podrían ser ciertas?
-Opciones:
-
-- a) Por default se bloquea el KLT (a menos que se use jacketing)
-- b) Podría bloquearse el KLT y también el proceso asociado
-- c) Podría no bloquearse el KLT si se usa jacketing
-- d) Al finalizar la operación bloqueante se vuelve a ejecutar el mismo ULT
-- e) Al finalizar la operación bloqueante se ejecuta otro ULT
-
-<details>
-<summary>Ver respuesta</summary>
-
-- **Todas pueden ser ciertas**
-- d) pasa si se hizo la syscall directa (la biblioteca no replanifica); e) si se usó el wrapper de la biblioteca y replanificó eligiendo otro ULT
 
 </details>
 

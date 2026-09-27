@@ -4,25 +4,116 @@ Los cálculos de FAT/EXT2 y los gráficos de links están en [11-fat-ext2.md](11
 
 ## Teóricos
 
-### [Cuestionario 06-13] ¿Qué se podría guardar en la FCB?
+### [Cuestionario File Systems (PDF)] ¿Qué cosas se podrían guardar en el FCB? (varias opciones)
+Opciones:
+
+- Nombre del archivo
+- Información de ubicación en disco
+- Timestamps de modificación, creación, etc.
+- Propietario
+- ACL
+- IDs de los procesos que tienen abierto a dicho archivo
+- Tamaño del archivo
 
 <details>
 <summary>Ver respuesta</summary>
 
-- **No** el nombre (está en la entrada de directorio)
-- Sí: ubicación (bloques/punteros), timestamps, propietario, ACL/permisos, tamaño
-- **No** los ID de los procesos que lo tienen abierto (eso está en la tabla de archivos abiertos de cada proceso y en la global)
+- **Correctas**: ubicación en disco, timestamps, propietario, ACL, tamaño
+- Comentario de la cátedra: el FCB guarda la info inherente al archivo (owner, fechas, info de protección como una ACL, tamaño y cómo encontrar su contenido). El nombre, aunque parece un atributo, es parte del contenido del directorio (el mismo archivo puede tener distintos nombres). Los procesos que lo usan están en las tablas de archivos abiertos.
 
 </details>
 
-### [Cuestionario 06-13] Otras respuestas
+### [Cuestionario File Systems (PDF)] Para escribir un archivo hay que hacerlo con una syscall. A dicha syscall, write, se le pasa el path del archivo a escribir
+Opciones:
+
+- Verdadero
+- Falso
 
 <details>
 <summary>Ver respuesta</summary>
 
-- En la syscall `write` se le pasa el path del archivo → **F**: el path es solo para abrir; `write` recibe el descriptor
-- La FCB siempre está en disco y puede estar en RAM
-- En una condición de carrera sobre archivos se pueden usar mutex, pero puede ser más eficiente usar locks
+- **Falso**
+- Comentario de la cátedra: antes de operar hay que abrir el archivo (open()), que recupera el FCB de disco y lo deja en memoria; write recibe el descriptor.
+
+</details>
+
+### [Cuestionario File Systems (PDF)] ¿En dónde podría estar almacenado un FCB?
+Opciones:
+
+- En RAM
+- En disco
+- Ambas son correctas
+- Ninguna es correcta
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Ambas son correctas**
+- Comentario de la cátedra: tiene que estar en disco para ser durable, y cuando el archivo está abierto su FCB está cargado en memoria.
+
+</details>
+
+### [Cuestionario File Systems (PDF)] Ante una situación de condición de carrera sobre el acceso a un archivo se podría usar mutex, pero podría ser más eficiente usar locks
+Opciones:
+
+- Verdadero
+- Falso
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Verdadero**
+- Comentario de la cátedra: el mutex resuelve la condición de carrera, pero varios procesos podrían querer solo leer: con locks compartidos no se bloquea a quienes no generan problemas de consistencia.
+
+</details>
+
+### [Cuestionario File Systems (PDF)] Compare las distintas estrategias de protección (Propietario/Grupo/Resto, Matriz de accesos, ACL) según granularidad y costo de mantenimiento
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Propietario/Grupo/Resto**: granularidad baja, costo de mantenimiento bajo
+- **Matriz de accesos**: granularidad alta, costo de mantenimiento alto
+- **ACL**: granularidad media, costo de mantenimiento medio
+
+</details>
+
+### [Cuestionario File Systems (PDF)] En un FS, tener más o menos fragmentación interna dependerá más que nada de la estrategia de asignación de bloques que se utilice
+Opciones:
+
+- Verdadero
+- Falso
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Falso** (según la cátedra podía justificarse V o F)
+- Comentario de la cátedra: todas las estrategias tienen fragmentación interna porque la unidad de asignación es el bloque; la indexada además la tiene en los bloques de punteros. Pero el factor que más la hace variar es el tamaño del bloque.
+
+</details>
+
+### [Cuestionario File Systems (PDF)] ¿Qué ventajas tiene la asignación indexada frente a las otras estrategias? (varias opciones)
+Opciones:
+
+- Permite hacer un acceso directo bastante eficiente (aunque podría generar accesos extras)
+- No desperdicia espacio en punteros
+- No tiene fragmentación externa
+- Optimiza el tiempo de acceso en disco por minimizar los movimientos mecánicos del disco
+- Es fácil encontrar un hueco libre
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Correctas**: acceso directo bastante eficiente; no tiene fragmentación externa; es fácil encontrar un hueco libre
+- Comentario de la cátedra: frente a contigua: no tiene fragmentación externa y cualquier bloque es asignable. Frente a enlazada: buen acceso directo (no lee todos los bloques anteriores, aunque puede leer bloques de punteros). Desperdicia aún más espacio en punteros que la enlazada, y minimizar movimientos del disco solo vale para contigua.
+
+</details>
+
+### [Cuestionario 06-13] Otras respuestas de la clase
+
+<details>
+<summary>Ver respuesta</summary>
+
 - + granularidad → + costo de mantenimiento
 - El tamaño de bloque determina la cantidad de fragmentación interna
 - Indexada: permite acceso casi directo, sin frag. externa, fácil encontrar huecos libres; si se corrompe el índice se pierde todo

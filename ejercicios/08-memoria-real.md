@@ -2,13 +2,143 @@
 
 ## Teóricos
 
-### [Cuestionario 05-30] Tabla de páginas invertida
+### [Cuestionario Memoria Real (PDF)] ¿En qué momento tiene que realizarse la traducción de direcciones para que se cumpla que DL = DF? (varias opciones)
+Opciones:
+
+- En tiempo de ejecución
+- En tiempo de compilación
+- En tiempo de carga
+- Ninguna es correcta
 
 <details>
 <summary>Ver respuesta</summary>
 
-- Ventaja sobre la convencional: al ser una única tabla en el sistema ocupa menos espacio
-- Desventajas: búsqueda secuencial (se soluciona con hash), difícil compartir; no es compatible (fácilmente) con memoria virtual
+- **En tiempo de compilación y en tiempo de carga**
+- Comentario de la cátedra: solo en tiempo de ejecución la DL es distinta de la DF y se traduce con la MMU en cada acceso.
+
+</details>
+
+### [Cuestionario Memoria Real (PDF)] ¿Cuáles de las siguientes afirmaciones son correctas sobre particiones dinámicas (asignación contigua)? (varias opciones)
+Opciones:
+
+- Puede generar fragmentación externa
+- Puede generar fragmentación interna
+- Toda la imagen del proceso se aloca en una partición contigua
+- Se requiere saber la base de cada partición
+- Se requiere saber el límite de cada partición
+- Limita el grado de multiprogramación
+- Un proceso en un sistema con este esquema podría ser tan grande como la memoria física
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Correctas**: fragmentación externa; toda la imagen en una partición contigua; saber la base; saber el límite; un proceso podría ser tan grande como la memoria física
+- Comentario de la cátedra: nunca hay fragmentación interna (cada proceso recibe lo que necesita), pero sí externa por los huecos. La administración es más compleja que en fijas (tamaños distintos, estrategia de ubicación, consolidar al liberar). Base y límite se necesitan para la protección. Inicialmente es una gran partición, así que un proceso podría ocupar toda la memoria; la cantidad de procesos depende de sus tamaños (no se limita la multiprogramación).
+
+</details>
+
+### [Cuestionario Memoria Real (PDF)] ¿Cuáles de las siguientes afirmaciones son correctas sobre particiones fijas (asignación contigua)? (varias opciones)
+Opciones:
+
+- Puede generar fragmentación externa
+- Puede generar fragmentación interna
+- La administración de particiones es más compleja que en particiones dinámicas
+- Toda la imagen del proceso se aloca en una partición contigua
+- Limita el grado de multiprogramación
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Correctas**: fragmentación interna; toda la imagen en una partición contigua; limita el grado de multiprogramación
+- Comentario de la cátedra: nunca hay fragmentación externa (cualquier partición libre se puede asignar), pero sí interna (a los procesos les sobra espacio). La administración es más simple (con particiones iguales alcanza un bitmap). Al definir las particiones a priori se limita la cantidad de procesos en memoria y su tamaño máximo.
+
+</details>
+
+### [Cuestionario Memoria Real (PDF)] En particiones dinámicas o segmentación, si queremos cargar un proceso nuevo y no podemos por fragmentación externa, no queda otra opción que esperar que otro proceso finalice y libere memoria
+Opciones:
+
+- Verdadero
+- Falso
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Falso**
+- Comentario de la cátedra: no es barato, pero se puede compactar la memoria para dejar todo el espacio libre contiguo y ahí cargarlo.
+
+</details>
+
+### [Cuestionario Memoria Real (PDF)] Con frames de 1 KiB, si se accede a la DL 443322 (decimal), ¿a qué página se está intentando acceder?
+Opciones:
+
+- 44
+- 432
+- 433
+- 954
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **432**
+- Comentario de la cátedra: 443322 / 1024 = 432 (offset 954).
+
+</details>
+
+### [Cuestionario Memoria Real (PDF)] Con direcciones físicas de 32 bits (que direccionan toda la memoria) y la memoria dividida en 1024 frames, si un acceso genera la DF 004DEF12h, ¿a qué marco se accede?
+Opciones:
+
+- No se puede obtener
+- 4
+- 1
+- D
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **1**
+- Comentario de la cátedra: 32 bits → 4 GiB; 1024 frames → los primeros 10 bits son el nro de marco y los 22 restantes el offset (2^32 / 2^10 = 2^22). 004DEF12h = 0000 0000 01|00 1101 1110 1111 0001 0010 → marco 0000000001 = 1.
+
+</details>
+
+### [Cuestionario Memoria Real (PDF)] La tabla de páginas invertida tiene como ventaja sobre la convencional que, al ser una única tabla en el sistema, ocupa menos espacio. Por otro lado, la única desventaja que tiene es que por default no permite compartir memoria
+Opciones:
+
+- Verdadero
+- Falso
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Falso**
+- Comentario de la cátedra: otra gran desventaja es que el acceso es muy poco eficiente (búsqueda lineal), salvo que se use una tabla de hash.
+
+</details>
+
+### [Cuestionario Memoria Real (PDF)] La paginación jerárquica no genera mucha penalización en los accesos en caso de usar una TLB. En caso contrario es mucho más lento
+Opciones:
+
+- Verdadero
+- Falso
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Verdadero**
+- Comentario de la cátedra: sin TLB se agrega un acceso extra a tablas de páginas por nivel; con TLB, en el mejor caso (TLB hit) el acceso cuesta lo mismo que sin ese nivel extra.
+
+</details>
+
+### [Cuestionario Memoria Real (PDF)] Paginación presenta fragmentación interna pero no externa, segmentación exactamente lo opuesto. Por lo tanto, segmentación paginada presenta ambos problemas pero en menor medida
+Opciones:
+
+- Verdadero
+- Falso
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Falso**
+- Comentario de la cátedra: la primera parte es cierta, pero en segmentación paginada la memoria se divide en frames, así que nunca hay fragmentación externa. Sí hay interna, un poco mayor que en paginación (última página de cada segmento).
 
 </details>
 

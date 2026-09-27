@@ -2,7 +2,7 @@
 
 ## Teóricos
 
-Las primeras 6 preguntas son las del cuestionario de repaso de la clase 03-28 (`apuntes/03-28 Repaso arqui + intro a SO.pdf`), con la respuesta correcta y el comentario de la cátedra.
+Las primeras 6 preguntas son las del cuestionario de repaso de la clase 03-28 (`apuntes/Cuestionario - Repaso arquitectura e intro a SO (03-28).pdf`), con la respuesta correcta y el comentario de la cátedra.
 
 ### [Cuestionario de repaso 03-28 (PDF)] ¿En qué momento se atienden las interrupciones (considerando que no están deshabilitadas)?
 Opciones:

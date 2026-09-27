@@ -35,10 +35,14 @@
 - **Fragmentación interna** (lo que sobra dentro de la partición)
 - Limita el grado de multiprogramación (= cantidad de particiones)
 - Simple, poco overhead (el de menor overhead)
-- También puede haber fragmentación externa (libres 12 + 4 pero el proceso de 16 no entra)
+- **Sin fragmentación externa**: cualquier partición libre se puede asignar
+
+> ⚠️ **Error en el Resumen SO:** decía que las particiones fijas también pueden tener fragmentación externa (ej: libres 12 + 4 y un proceso de 16 que no entra). El cuestionario de Memoria Real de la cátedra dice que nunca hay fragmentación externa: ese caso es un proceso más grande que las particiones, no huecos inutilizables.
+
 
 ### Particiones dinámicas
 - La partición se crea del tamaño exacto del proceso
+- Un proceso podría ser tan grande como toda la memoria física. Se necesita base y límite de cada partición. Administración más compleja que fijas
 - **Fragmentación externa** (huecos chicos no contiguos) → se soluciona con **compactación** (overhead: mover procesos, no pueden ejecutar)
 - Sin fragmentación interna, grado de multiprogramación no limitado
 - No se lleva bien con procesos que crecen

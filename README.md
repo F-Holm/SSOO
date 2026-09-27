@@ -94,7 +94,10 @@ Leyenda: ✅ solución oficial del final · ✍️ respuesta propia (el PDF del 
 
 | Archivo | Tema |
 |---|---|
-| [03-28 Repaso arqui + intro a SO.pdf](apuntes/03-28%20Repaso%20arqui%20%2B%20intro%20a%20SO.pdf) | Cuestionario de repaso (arquitectura e intro a SO) → resuelto en ejercicios/01 |
+| [Cuestionario - Procesos, Hilos y Planificación.pdf](apuntes/Cuestionario%20-%20Procesos%2C%20Hilos%20y%20Planificaci%C3%B3n.pdf) | Cuestionario de clase: Procesos, Hilos y Planificación → resuelto en ejercicios/03, 04 y 05 |
+| [Cuestionario - Memoria Real.pdf](apuntes/Cuestionario%20-%20Memoria%20Real.pdf) | Cuestionario de clase: Memoria Real → resuelto en ejercicios/08 |
+| [Cuestionario - File Systems.pdf](apuntes/Cuestionario%20-%20File%20Systems.pdf) | Cuestionario de clase: File Systems → resuelto en ejercicios/10 |
+| [Cuestionario - Repaso arquitectura e intro a SO (03-28).pdf](apuntes/Cuestionario%20-%20Repaso%20arquitectura%20e%20intro%20a%20SO%20%2803-28%29.pdf) | Cuestionario de repaso (arquitectura e intro a SO) → resuelto en ejercicios/01 |
 | [03-28.txt](apuntes/03-28.txt) | Datos de la cursada, repaso de arquitectura, interrupciones |
 | [04-04.txt](apuntes/04-04.txt) | Cuestionario + procesos, estados, planificación |
 | [04-11.txt](apuntes/04-11.txt) | Hilos (ULT/KLT), VRR, colas multinivel |

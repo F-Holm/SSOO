@@ -6,6 +6,178 @@ Convención de los Gantt: columna `t` = intervalo [t, t+1). `X` = CPU, `io` = E/
 
 ## Teóricos
 
+### [Cuestionario Procesos, Hilos y Planificación (PDF)] ¿Cuáles de los siguientes planificadores impactan o modifican con sus acciones el grado de multiprogramación? (varias opciones)
+Opciones:
+
+- Planificador de corto plazo
+- Planificador de mediano plazo
+- Planificador de largo plazo
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Mediano y largo plazo**
+- Comentario de la cátedra: el de largo plazo, al admitir procesos, aumenta el grado de multiprogramación; el de mediano plazo, al mandar procesos a swap o traerlos, lo decrementa o incrementa.
+
+</details>
+
+### [Cuestionario Procesos, Hilos y Planificación (PDF)] ¿Cuál es el planificador que es más importante que tenga menos overhead?
+Opciones:
+
+- El encargado de admitir nuevos procesos al sistema
+- El encargado de hacer swapping
+- El encargado de poner procesos en ejecución
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **El encargado de poner procesos en ejecución** (corto plazo)
+- Comentario de la cátedra: se ejecuta muy seguido, así que tiene que decidir bien y con el menor overhead posible.
+
+</details>
+
+### [Cuestionario Procesos, Hilos y Planificación (PDF)] ¿Qué es el tiempo de espera?
+Opciones:
+
+- El tiempo en que el proceso está en la cola de bloqueados
+- El tiempo en que el proceso no está en ejecución
+- El tiempo en que el proceso está en la cola de listos
+- El tiempo en que el proceso está suspendido
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **El tiempo en que el proceso está en la cola de listos**
+- Comentario de la cátedra: es el tiempo que le negamos la CPU: podría haber sido elegido pero el planificador eligió a otro.
+
+</details>
+
+### [Cuestionario Procesos, Hilos y Planificación (PDF)] ¿Cuál/es de las siguientes afirmaciones son FALSAS sobre FIFO? (varias opciones)
+Opciones:
+
+- Podría permitir que un proceso monopolice la CPU
+- Podría ser útil para correr procesos secuenciales
+- Minimiza los cambios de contexto
+- Todas
+- Ninguna
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Ninguna** (todas las afirmaciones son verdaderas)
+- Comentario de la cátedra: al no tener desalojo un proceso podría no liberar nunca la CPU; para correr un lote de procesos minimizando overhead es buena opción; ejecutar uno tras otro minimiza la replanificación y los cambios de contexto.
+
+</details>
+
+### [Cuestionario Procesos, Hilos y Planificación (PDF)] ¿Cuáles de las siguientes afirmaciones son correctas sobre SJF? (varias opciones)
+Opciones:
+
+- Puede implementarse con o sin desalojo
+- Minimiza el tiempo de espera promedio
+- Para poder optimizarlo se puede utilizar un promedio ponderado (media exponencial)
+- Prioriza a los procesos CPU bound
+- Es un algoritmo con poco overhead
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Correctas**: puede implementarse con o sin desalojo (con desalojo = SRT); minimiza el tiempo de espera promedio
+- La media exponencial no se toma como correcta porque no sirve para "optimizarlo": es **necesaria** para implementarlo (hay que estimar las ráfagas). Prioriza a los IO bound (no CPU bound) y tiene bastante overhead (más con desalojo)
+
+</details>
+
+### [Cuestionario Procesos, Hilos y Planificación (PDF)] HRRN podría implementarse con desalojo sin mayores desventajas
+Opciones:
+
+- Verdadero
+- Falso
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Falso**
+- Comentario de la cátedra: como el response ratio depende del tiempo de espera, con desalojo habría que recalcularlo para todos los listos en cada evento de replanificación → muchísimo overhead.
+
+</details>
+
+### [Cuestionario Procesos, Hilos y Planificación (PDF)] En RR el SO lanza una interrupción para desalojar al proceso en ejecución y selecciona al siguiente proceso en LISTO
+Opciones:
+
+- Verdadero
+- Falso
+
+> ⚠️ **Error en el apunte (04-18):** ahí figuraba como respuesta "RR: lanza una interrupción para desalojar al proceso en ejecución y selecciona al siguiente en LISTO" (Verdadero). Según la cátedra es Falso: la interrupción la lanza el timer.
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Falso**
+- Comentario de la cátedra: no es el SO el que interrumpe sino el timer (programado por el planificador antes de poner a ejecutar al proceso), que lanza la interrupción de fin de quantum. Luego el SO la atiende y el planificador elige a otro proceso.
+
+</details>
+
+### [Cuestionario Procesos, Hilos y Planificación (PDF)] Para un algoritmo de tipo "Feedback" no es suficiente saber que tiene dos colas de planificación y que ambas utilizan RR para poder implementarlo
+Opciones:
+
+- Verdadero
+- Falso
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Verdadero**
+- Comentario de la cátedra: también hay que saber a qué cola ingresan los procesos nuevos, cuál es el algoritmo entre colas, si hay desalojo entre ellas y cuál es el criterio para pasar de una cola a otra.
+
+</details>
+
+### [Cuestionario Procesos, Hilos y Planificación (PDF)] ¿Cuáles de los siguientes algoritmos podrían sufrir de inanición? (varias opciones)
+Opciones:
+
+- FIFO
+- SJF
+- Por prioridades
+- RR
+- VRR
+- HRRN
+- Feedback
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **SJF, por prioridades y Feedback**
+- Comentario de la cátedra: FIFO atiende a todos en orden de llegada; SJF puede no elegir nunca a un proceso largo; prioridades, igual pero con la prioridad; RR es FIFO con quantum; VRR parece que podría por su cola prioritaria, pero Q' tiende a 0 y al consumir su Q vuelve a la cola menos prioritaria; HRRN incluye el tiempo de espera en la fórmula; Feedback depende de la configuración (puede haber inanición en una cola o entre colas).
+
+</details>
+
+### [Cuestionario Procesos, Hilos y Planificación (PDF)] Sabiendo que el SO planifica con SJF (α = 0,5) y que el estimado anterior de KAA fue 3, ¿cuáles de las siguientes afirmaciones son verdaderas? (varias opciones)
+Estado del sistema (del gráfico del PDF, `X` = CPU, `io` = E/S):
+
+| Proceso | Hilo | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---|---|---|---|---|---|---|---|---|---|
+| PA (KAA) | UAA1 | | X | X | io | io | io | io | |
+| | UAA2 | | | | X | FIN | | | |
+| | UAA3 | | | | | X | X | | io → (sigue) |
+| PA (KAB) | | X | io | | | | | | |
+| PB (KB) | | | | | | | | X | X |
+
+Opciones:
+
+- El próximo estimado de KAA será 4
+- KAA nunca llega a bloquearse
+- KAA utiliza una biblioteca de ULTs con jacketing
+- La biblioteca de ULTs de KAA utiliza SJF
+
+<details>
+<summary>Ver respuesta</summary>
+
+- **Correctas**: el próximo estimado de KAA será 4; KAA usa una biblioteca de ULTs con jacketing
+- Estimado: KAA ejecutó 5 unidades (1 a 6) hasta bloquearse → 0,5 × 5 + 0,5 × 3 = 4
+- Sí se bloquea: en t6 todos sus ULTs están bloqueados o terminados, así que el KLT se bloquea (la biblioteca no tiene nada para ejecutar)
+- Jacketing: UAA2 y UAA3 ejecutan mientras UAA1 hace E/S
+- No se puede afirmar que la biblioteca use SJF: con estos datos también podría ser FIFO
+
+</details>
+
 ### [Resumen] Los algoritmos con desalojo, ¿qué eventos tienen en cuenta para replanificar? ¿Por qué los sin desalojo no?
 
 <details>
@@ -152,22 +324,6 @@ Convención de los Gantt: columna `t` = intervalo [t, t+1). `X` = CPU, `io` = E/
 <summary>Ver respuesta</summary>
 
 - Aumentar la prioridad de un proceso a medida que espera, para evitar starvation. Ej: HRRN (tiene en cuenta W)
-
-</details>
-
-### [Cuestionario 04-18] Respuestas
-
-<details>
-<summary>Ver respuesta</summary>
-
-- Los planificadores de mediano y largo plazo impactan en el grado de multiprogramación
-- El que tiene que tener menos overhead es el de corto plazo
-- Tiempo de espera = tiempo en la cola de listos
-- FIFO: no monopolizan (en general), útil para procesos secuenciales, minimiza cambios de contexto
-- SJF: minimiza el tiempo de espera promedio
-- RR: lanza una interrupción para desalojar al proceso en ejecución y selecciona al siguiente en LISTO
-- Feedback: no alcanza con saber que tiene 2 colas con RR para implementarlo (falta a qué cola entran, cómo cambian de cola, algoritmo entre colas, quantum de cada una...)
-- Inanición: SJF, por prioridades, Feedback
 
 </details>
 
