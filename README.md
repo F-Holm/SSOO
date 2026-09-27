@@ -30,6 +30,9 @@ Apuntes, resúmenes y ejercicios de final resueltos de la materia.
 
 ## Ejercicios resueltos
 
+Las respuestas están plegadas: abrir el archivo en vista previa (VS Code: `Ctrl+Shift+V`, o GitHub) y hacer click en **"Ver respuesta"**. En el editor de texto se ven completas.
+
+
 Leyenda: ✅ solución oficial del final · ✍️ respuesta propia (el PDF del final no trae solución) · 📘 respuesta del Resumen SO · ⚠️ error o aclaración detectada (en la consigna, en la solución oficial o en los apuntes)
 
 | # | Tema | Archivo |

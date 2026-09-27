@@ -1,6 +1,8 @@
 # Índice de ejercicios (finales, parciales y cuestionarios resueltos)
 
 Fuentes: finales 2022-08-02 a 2026-07-14 (`finales/`), "Preguntas de parcial" del Resumen SO y cuestionarios de clase (`.txt`).
+Las respuestas están plegadas: abrir el archivo en vista previa (VS Code: `Ctrl+Shift+V`, o GitHub) y hacer click en **"Ver respuesta"**. En el editor de texto se ven completas.
+
 Leyenda: ✅ solución oficial del final · ✍️ respuesta propia (el PDF del final no trae solución) · 📘 respuesta del Resumen SO · ⚠️ error o aclaración (se indica si está en la consigna, en la solución oficial o en los apuntes). Las preguntas del cuestionario de repaso (PDF 03-28) están en 01.
 
 | # | Tema | Archivo |
