@@ -6,57 +6,57 @@
 - Ventaja sobre la convencional: al ser una única tabla en el sistema ocupa menos espacio
 - Desventajas: búsqueda secuencial (se soluciona con hash), difícil compartir; no es compatible (fácilmente) con memoria virtual
 
-### [Final 2022-12-06] En una referencia a memoria, un acierto en la TLB tiene como ventaja evitar un fallo de página
+### [Final 2022-12-06] En una referencia a memoria, un acierto en la TLB tiene como ventaja evitar un fallo de página — ✍️ respuesta propia (el PDF del final no trae solución)
 - **F**. La ventaja es evitar el acceso a la tabla de páginas en memoria (1 acceso en vez de 2). Que no haya PF no se debe a la TLB
 
-### [Final 2022-12-21] Sin memoria virtual no es necesaria la TLB porque no se producen page faults
+### [Final 2022-12-21] Sin memoria virtual no es necesaria la TLB porque no se producen page faults — ✅ solución oficial
 - **F**. La TLB reduce el tiempo de traducción con o sin memoria virtual (oficial)
 
-### [Final 2023-02-14] El tamaño de una tabla de páginas invertida no varía nunca, independientemente de la cantidad de procesos o su tamaño
+### [Final 2023-02-14] El tamaño de una tabla de páginas invertida no varía nunca, independientemente de la cantidad de procesos o su tamaño — ✍️ respuesta propia (el PDF del final no trae solución)
 - **V**. Tiene una entrada por marco de la memoria física
 
-### [Final 2024-03-05] La tabla de páginas invertida nunca cambia su tamaño durante la ejecución de un proceso
+### [Final 2024-03-05] La tabla de páginas invertida nunca cambia su tamaño durante la ejecución de un proceso — ✅ solución oficial
 - **V**. Siempre tiene una entrada por marco (oficial)
 
-### [Final 2023-03-07] Segmentación paginada podría causar fragmentación externa con muchos procesos chicos
+### [Final 2023-03-07] Segmentación paginada podría causar fragmentación externa con muchos procesos chicos — ✅ solución oficial
 - **F**. La información se guarda en páginas de tamaño fijo: solo hay fragmentación interna (oficial)
 
-### [Final 2023-05-23] Segmentación paginada tiene más fragmentación interna que segmentación y paginación, pero usa la memoria más eficientemente que segmentación
+### [Final 2023-05-23] Segmentación paginada tiene más fragmentación interna que segmentación y paginación, pero usa la memoria más eficientemente que segmentación — ✍️ respuesta propia (el PDF del final no trae solución)
 - **V**. Frag. interna en la última página de cada segmento (segmentación no tiene; paginación solo en la última página del proceso), pero elimina la externa
 
-### [Final 2023-12-12] La segmentación paginada no sufre de fragmentación externa
+### [Final 2023-12-12] La segmentación paginada no sufre de fragmentación externa — ✍️ respuesta propia (el PDF del final no trae solución)
 - **V**. Los segmentos se reparten en marcos de tamaño fijo
 
-### [Final 2023-12-19] Comparada con paginación, la segmentación es más eficaz para asignar permisos a las distintas porciones de un proceso
+### [Final 2023-12-19] Comparada con paginación, la segmentación es más eficaz para asignar permisos a las distintas porciones de un proceso — ✍️ respuesta propia (el PDF del final no trae solución)
 - **V**. Cada segmento es una parte lógica (código, datos, pila) → permisos naturales por segmento; las páginas cortan el proceso arbitrariamente
 
-### [Final 2024-07-23] La fragmentación externa e interna son igual de perjudiciales para segmentación y segmentación paginada
+### [Final 2024-07-23] La fragmentación externa e interna son igual de perjudiciales para segmentación y segmentación paginada — ✍️ respuesta propia (el PDF del final no trae solución)
 - **F**. Segmentación: solo externa. Segmentación paginada: solo interna
 
-### [Final 2025-07-29] Comparada con paginación simple, la paginación jerárquica optimiza el tiempo de traducción
+### [Final 2025-07-29] Comparada con paginación simple, la paginación jerárquica optimiza el tiempo de traducción — ✍️ respuesta propia (el PDF del final no trae solución)
 - **F**. Agrega un acceso a memoria por nivel; optimiza el espacio de las tablas, no el tiempo
 
-### [Final 2025-09-25 / 2025-12-02] Paginación multinivel podría implicar muchos accesos a memoria por traducción solo si no hay TLB
+### [Final 2025-09-25 / 2025-12-02] Paginación multinivel podría implicar muchos accesos a memoria por traducción solo si no hay TLB — ✍️ respuesta propia (el PDF del final no trae solución)
 - **F**. Con TLB también: en cada TLB miss hay que recorrer todos los niveles (niveles + 1 accesos)
 
-### [Final 2025-12-16] Es posible combinar segmentación con paginación multinivel para obtener los beneficios de ambas
+### [Final 2025-12-16] Es posible combinar segmentación con paginación multinivel para obtener los beneficios de ambas — ✅ solución oficial
 - **V**. Es común en sistemas modernos (oficial)
 
-### [Final 2026-05-19] En paginación simple, usar una tabla de páginas por proceso no permite compartir memoria
+### [Final 2026-05-19] En paginación simple, usar una tabla de páginas por proceso no permite compartir memoria — ✅ solución oficial
 - **F**. Entradas de distintas tablas pueden apuntar al mismo marco (oficial)
 
-### [Final 2026-02-24] Evaluar la respuesta del LLM
+### [Final 2026-02-24] Evaluar la respuesta del LLM — ✅ solución oficial
 - Afirmación: "La segmentación paginada combina beneficios de paginación y segmentación mitigando sus desventajas"
 - LLM: "Correcta: mantiene la división lógica en segmentos pero evita la fragmentación externa al paginar cada segmento"
 - **Correcta**: permite permisos y gestión por segmento y evita la fragmentación externa (oficial)
 
-### [Final 2023-07-25 N°2] ChatGPT ordenó de menor a mayor overhead: Buddy System, Segmentación paginada, Particionamiento fijo. Evaluar; ubicar Particionamiento dinámico
+### [Final 2023-07-25 N°2] ChatGPT ordenó de menor a mayor overhead: Buddy System, Segmentación paginada, Particionamiento fijo. Evaluar; ubicar Particionamiento dinámico — ✍️ respuesta propia (el PDF del final no trae solución)
 - **Incorrecta**: el particionamiento fijo es el de **menor** overhead (una tabla simple, base + límite); su problema es la fragmentación interna (desperdicio), no el overhead. La respuesta confunde desperdicio con overhead
 - Orden: Particionamiento fijo < Buddy System < Particionamiento dinámico (búsqueda de huecos + compactación) < Segmentación paginada (tablas de segmentos y páginas, traducción en dos niveles). Sin compactación, dinámico y buddy quedan parecidos
 
 ## Prácticos
 
-### [Final 2024-07-30] Sistema de 16 bits, sin memoria virtual, 32 KiB de RAM, segmentación paginada. 4 segmentos siempre (Code, Data, Stack, Heap), páginas de 256 B
+### [Final 2024-07-30] Sistema de 16 bits, sin memoria virtual, 32 KiB de RAM, segmentación paginada. 4 segmentos siempre (Code, Data, Stack, Heap), páginas de 256 B — ✍️ respuesta propia (el PDF del final no trae solución)
 | Code S0 | Data S1 | Stack S2 | Heap S3 |
 |---|---|---|---|
 | p0 → 3 (RX) | p0 → 6 (RW) | p0 → 9 (RW) | p0 → 10 (RW) |

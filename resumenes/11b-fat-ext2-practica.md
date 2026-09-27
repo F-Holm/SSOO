@@ -53,4 +53,6 @@
 - 2) a: 2^12 × 8 KiB = 2^25 B = 32 MiB (FAT12 con clusters de 8 KiB) — b: 32 KiB
 - 3) a: 8 GiB / 4 KiB = 2 Mi entradas — b: % FAT = 2 × T_FAT / T_disco = 2 × 2^23 / 2^33 = 1/2^9 = 0,1953 % — c: bits sin usar = 32 − log2(2 Mi) − 4 (reservados FAT32) = 32 − 21 − 4 = 7 bits
 - 4) a: 4 GiB / 2^16 = 2^16 B = 64 KiB — b: 64 KiB, 64 KiB y 16 bloques
-- 7) c: Σ (cant. punteros × tam bloque) con bloques de 1 KiB y 256 punteros por bloque = 12 KiB + 256 KiB + 64 MiB + 16 GiB (en el apunte figuraba 54 MiB, es 256² KiB = 64 MiB)
+- 7) c: Σ (cant. punteros × tam bloque) con bloques de 1 KiB y 256 punteros por bloque = 12 KiB + 256 KiB + 64 MiB + 16 GiB 
+
+> ⚠️ **Error en el apunte (06-13):** figuraba "54 MiB"; es 256² KiB = 64 MiB.

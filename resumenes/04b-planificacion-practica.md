@@ -10,8 +10,12 @@
 4. Revisar simultaneidad de eventos en cada instante
 
 ## Convenciones de la cátedra
-- Simultaneidad al llegar a ready: **clock > fin de E/S > proceso nuevo**
-- Empate (misma prioridad / misma ráfaga): FIFO; en empate con el que estaba en CPU, sigue el que estaba en CPU
+- **Desempate (siempre que haya empate, en llegada simultánea a ready o en el criterio del algoritmo)**:
+  1. El proceso en ejecución (el que viene de CPU: fin de quantum o desalojo)
+  2. El proceso que vuelve de E/S
+  3. El proceso nuevo
+  - Dentro de la misma categoría: FIFO (el que espera desde antes)
+- SJF con empate de ráfaga entre uno que vuelve de E/S y uno que nunca ejecutó → el que vuelve de E/S
 - SRT con empate: no desaloja
 - RR: el quantum no se acumula. Si queda solo un proceso listo al terminar su quantum, sigue ejecutando
 - Las E/S se atienden FIFO. Si el dispositivo "no permite accesos en paralelo" hay que hacer cola de E/S; si no dice nada, suelen asumirse en paralelo

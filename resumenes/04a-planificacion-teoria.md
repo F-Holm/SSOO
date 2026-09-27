@@ -95,8 +95,8 @@
 | CMN | Depende | Sí | | |
 
 ## Simultaneidad de eventos en ready
-- Orden: 1° interrupción de clock (fin de quantum), 2° fin de evento (E/S), 3° syscall de proceso nuevo
-- Empate por FIFO: el que estaba en CPU tiene prioridad
+- Desempate: 1° el proceso en ejecución (fin de quantum / desalojo, interrupción de clock), 2° el que vuelve de E/S (fin de evento), 3° el proceso nuevo (syscall)
+- Se usa para cualquier empate en los Gantt (llegada simultánea o misma prioridad/ráfaga). Dentro de la misma categoría, FIFO
 - Importa en FIFO y RR (el orden de llegada define la prioridad). En SJF no. En VRR los que vuelven de E/S van a la aux
 - Las E/S no se planifican: se atienden por FIFO
 

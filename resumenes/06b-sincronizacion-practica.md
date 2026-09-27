@@ -74,7 +74,10 @@ wait(s); wait(s)   // dos signals previos
 ```
 
 ## Ejemplo de clase: BACA BACA (B A C A B A C A ...)
-Solución 1 (corregida: en el apunte `mutexBoC` arrancaba en 0 y así se bloquean todos al inicio)
+Solución 1
+
+> ⚠️ **Error en el apunte (04-18):** `mutexBoC` arrancaba en 0 y así se bloquean todos al inicio. Corregido: arranca en 1.
+
 ```
 mutexA = 0; mutexB = 1; mutexC = 0; mutexBoC = 1
 
@@ -83,7 +86,10 @@ B: wait(mutexB); wait(mutexBoC); printf("B"); signal(mutexA); signal(mutexC)
 C: wait(mutexC); wait(mutexBoC); printf("C"); signal(mutexA); signal(mutexB)
 ```
 
-Solución 2 (A avisa a B y a C; cada uno necesita 2 avisos. Corregida: B arranca en 2 y C en 1, con B=1 y C=0 se bloquean al inicio)
+Solución 2 (A avisa a B y a C; cada uno necesita 2 avisos)
+
+> ⚠️ **Error en el apunte (04-18):** con B = 1 y C = 0 se bloquean todos al inicio. Corregido: B arranca en 2 y C en 1.
+
 ```
 mutexA = 0; mutexB = 2; mutexC = 1
 

@@ -41,7 +41,9 @@ int a = 0;          P1: c = a; c++; a = c;      P2: b = a; b--; a = b;
 - **V**. Leen y escriben el semáforo compartido (no se cumplen las condiciones de Bernstein)
 
 ### [Resumen] V/F: Tanto los semáforos como deshabilitar/habilitar interrupciones son técnicas que los usuarios pueden usar para la mutua exclusión sin espera activa
-- **F** (en el resumen figuraba "V (?)"). Deshabilitar interrupciones es una instrucción privilegiada: un proceso de usuario no puede usarla. Los semáforos con bloqueo sí evitan la espera activa
+> ⚠️ **Error en la respuesta del Resumen:** figuraba "Verdadero (?)".
+
+- **F**. Deshabilitar interrupciones es una instrucción privilegiada: un proceso de usuario no puede usarla. Los semáforos con bloqueo sí evitan la espera activa
 
 ### [Resumen] ¿Por qué los semáforos son buena solución? ¿Cómo logra el SO que wait/signal sean atómicas?
 - Garantizan mutua exclusión, progreso y espera limitada, sin espera activa
@@ -59,46 +61,46 @@ Consumidor: wait(s_elementos); wait(m_buffer); y = extraer(); signal(m_buffer); 
 - + Garantizan mutua exclusión y progreso; sirven si la SC es muy corta (evitan el costo de bloquear)
 - − Consumen CPU esperando
 
-### [Final 2022-08-02] Para sincronizar el orden entre procesos siempre se debe utilizar semáforos mutex o contadores
+### [Final 2022-08-02] Para sincronizar el orden entre procesos siempre se debe utilizar semáforos mutex o contadores — ✍️ respuesta propia (el PDF del final no trae solución)
 - **F**. Para ordenar se usan semáforos binarios (el mutex es para mutua exclusión); además existen otras técnicas (monitores, mensajes, soluciones de software)
 
-### [Final 2022-09-07] En dispositivos con un solo procesador no es necesario implementar sincronización
+### [Final 2022-09-07] En dispositivos con un solo procesador no es necesario implementar sincronización — ✅ solución oficial
 - **F**. Ej: variable compartida entre hilos del mismo proceso; el planificador puede cortar en medio (oficial)
 
-### [Final 2022-12-06] No es posible que haya condición de carrera sobre estructuras de datos que no pueden ser modificadas
+### [Final 2022-12-06] No es posible que haya condición de carrera sobre estructuras de datos que no pueden ser modificadas — ✍️ respuesta propia (el PDF del final no trae solución)
 - **V**. Si solo se leen se cumplen las condiciones de Bernstein (no hay escrituras)
 
-### [Final 2023-02-14] En un monoprocesador, dos procesos que comparten una variable global no tienen problemas de concurrencia si la sentencia es `variable = variable - 1`
+### [Final 2023-02-14] En un monoprocesador, dos procesos que comparten una variable global no tienen problemas de concurrencia si la sentencia es `variable = variable - 1` — ✍️ respuesta propia (el PDF del final no trae solución)
 - **F**. La sentencia son varias instrucciones (MOV, SUB, MOV): una interrupción/cambio de proceso en el medio produce condición de carrera
 
-### [Final 2023-08-01] Una solución de software resuelve la mutua exclusión, siempre ocasiona espera activa y puede provocar deadlocks (pero no livelocks)
+### [Final 2023-08-01] Una solución de software resuelve la mutua exclusión, siempre ocasiona espera activa y puede provocar deadlocks (pero no livelocks) — ✅ solución oficial
 - **F**. Siempre tienen espera activa, pero según cómo se usen pueden provocar deadlocks y también livelocks (oficial)
 
-### [Final 2023-12-19 / 2024-05-10] La espera activa para proteger secciones críticas implica que se usan soluciones de software
+### [Final 2023-12-19 / 2024-05-10] La espera activa para proteger secciones críticas implica que se usan soluciones de software — ✅ solución oficial
 - **F**. Soluciones de HW (test_and_set) y semáforos con espera activa también la tienen (oficial)
 
-### [Final 2024-02-20] En un monoprocesador, el planificador de corto plazo podría generar una condición de carrera. No si los procesos están bien sincronizados
+### [Final 2024-02-20] En un monoprocesador, el planificador de corto plazo podría generar una condición de carrera. No si los procesos están bien sincronizados — ✅ solución oficial
 - **V**. El planificador puede interrumpir una operación que debía ser atómica; bien sincronizados el resultado es correcto sin importar el orden (oficial)
 
-### [Final 2024-07-23] La existencia de una SC garantiza que el resultado será incoherente siempre que varios procesos escriban recursos críticos
+### [Final 2024-07-23] La existencia de una SC garantiza que el resultado será incoherente siempre que varios procesos escriban recursos críticos — ✍️ respuesta propia (el PDF del final no trae solución)
 - **F**. Solo existe la posibilidad (depende del orden de ejecución); sincronizando correctamente el resultado es coherente
 
-### [Final 2024-07-30] La alternancia entre procesos puede solucionar la exclusión mutua, pero puede no cumplir los requisitos de la SC
+### [Final 2024-07-30] La alternancia entre procesos puede solucionar la exclusión mutua, pero puede no cumplir los requisitos de la SC — ✍️ respuesta propia (el PDF del final no trae solución)
 - **V**. La variable turno asegura mutua exclusión pero no progreso (uno que no quiere entrar bloquea al otro) y tiene espera activa
 
-### [Final 2025-02-18 / 2025-12-02] Algunos semáforos permiten asegurar la exclusión mutua pero pueden generar un bloqueo permanente
+### [Final 2025-02-18 / 2025-12-02] Algunos semáforos permiten asegurar la exclusión mutua pero pueden generar un bloqueo permanente — ✍️ respuesta propia (el PDF del final no trae solución)
 - **V**. Mal usados (ej: waits en distinto orden, falta de signal) llevan a deadlock
 
-### [Final 2025-02-25] Dos ULTs del mismo proceso (sin KLTs) podrían sufrir una condición de carrera al modificar una variable compartida
+### [Final 2025-02-25] Dos ULTs del mismo proceso (sin KLTs) podrían sufrir una condición de carrera al modificar una variable compartida — ✍️ respuesta propia (el PDF del final no trae solución)
 - **V**. Si la biblioteca cambia de ULT en medio de la modificación (llamada a la biblioteca, desalojo), el otro puede leer un valor intermedio
 
-### [Final 2025-07-15] En un sistema monoprocesador las condiciones de carrera no pueden ocurrir
+### [Final 2025-07-15] En un sistema monoprocesador las condiciones de carrera no pueden ocurrir — ✍️ respuesta propia (el PDF del final no trae solución)
 - **F**. Con multiprogramación el planificador puede intercalar la ejecución
 
-### [Final 2026-05-19] En productor–consumidor, mientras haya elementos en el buffer el consumidor podrá extraerlos inmediatamente
+### [Final 2026-05-19] En productor–consumidor, mientras haya elementos en el buffer el consumidor podrá extraerlos inmediatamente — ✅ solución oficial
 - **F**. El buffer es compartido: debe obtener la mutua exclusión primero (oficial)
 
-### [Final 2026-02-24] Evaluar la respuesta del LLM
+### [Final 2026-02-24] Evaluar la respuesta del LLM — ✅ solución oficial
 - Afirmación: "El uso de test & set o instrucciones similares permite evitar las condiciones de carrera"
 - LLM: "Correcto: son atómicas (leer y actualizar en una operación indivisible). No eliminan automáticamente todas las condiciones de carrera: proveen un mecanismo sobre el cual construir exclusión mutua"
 - **Correcta** (oficial)
@@ -108,7 +110,7 @@ Consumidor: wait(s_elementos); wait(m_buffer); y = extraer(); signal(m_buffer); 
 ### [Clase 04-18] BACA BACA
 - Ver [resumen 06b](../resumenes/06b-sincronizacion-practica.md) (dos soluciones corregidas)
 
-### [Final 2022-12-21] Proceso con 2 hilos, semáforos con bloqueo. a) Orden que produzca deadlock y qué algoritmo podría causarlo b) ¿Afecta a otros procesos? ¿Y sin bloqueo? c) Corregir
+### [Final 2022-12-21] Proceso con 2 hilos, semáforos con bloqueo. a) Orden que produzca deadlock y qué algoritmo podría causarlo b) ¿Afecta a otros procesos? ¿Y sin bloqueo? c) Corregir — ✅ solución oficial
 ```
 sem1 = 1; sem2 = 0; mutex = 1        // acumulador: global del proceso
 Hilo 1: valor = cálculo(); wait(sem1); wait(mutex); acumulador += valor; signal(mutex); signal(sem2)
@@ -118,7 +120,7 @@ Hilo 2: valor = cálculo(); wait(mutex); wait(sem2); acumulador += valor; signal
 - b) No afecta a otros procesos (los semáforos son del proceso, los bloqueados no consumen CPU). Sin bloqueo (espera activa) sería un livelock que consume CPU y afecta al resto
 - c) Invertir `wait(mutex)` y `wait(sem2)` en el Hilo 2 (que el mutex encierre solo la SC), o sacar el mutex (sem1/sem2 ya garantizan la alternancia)
 
-### [Final 2023-02-14] Sincronizar para imprimir permanentemente "Qué mirás bobo, andá pa allá, bobo"
+### [Final 2023-02-14] Sincronizar para imprimir permanentemente "Qué mirás bobo, andá pa allá, bobo" — ✍️ respuesta propia (el PDF del final no trae solución)
 ```
 P1: while(true) printf("bobo")    P2: while(true) printf("Qué mirás")    P3: while(true) printf("andá pa allá")
 ```
@@ -139,7 +141,9 @@ P4: while(true){ wait(limite); iniciar(); signal(pedidos) }
 P2: while(true){ wait(pedidos); wait(sQM); wait(sFrase); printf("Qué mirás"); signal(limite); signal(sBobo); signal(sAPA) }
 ```
 
-### [Final 2023-03-07] "¿Qué mirás? bobo. Andá pa allá, bobo" + "Tranquilo Leo". Aprendizaje: hasta 2 procesos en simultáneo (oficial)
+### [Final 2023-03-07] "¿Qué mirás? bobo. Andá pa allá, bobo" + "Tranquilo Leo". Aprendizaje: hasta 2 procesos en simultáneo (oficial) — ✅ solución oficial
+> ⚠️ **Error en la consigna:** dice "se arma una simulación con 3 procesos" pero hay 4 (el cuarto dice "Tranquilo Leo").
+
 ```
 cantAprendizaje = 2; semA = semC = 1; semB = semD = semE = 0
 
@@ -150,7 +154,7 @@ P4 (tranquilo):    wait(cantAprendizaje); aprendizaje(); signal(cantAprendizaje)
 ```
 (todo dentro de `while(true)`; hay otras soluciones posibles, ej: con 3 semáforos para QM-B-APA-B)
 
-### [Final 2023-07-25 N°8] Productor agrega libremente, consumidor retira si hay al menos uno, sin condiciones de carrera. ChatGPT propuso:
+### [Final 2023-07-25 N°8] Productor agrega libremente, consumidor retira si hay al menos uno, sin condiciones de carrera. ChatGPT propuso: — ✍️ respuesta propia (el PDF del final no trae solución)
 ```
 lleno = 0; vacio = 1
 P: while(TRUE){ wait(vacio); agregar(LISTA, new_value()); signal(lleno) }
@@ -164,7 +168,7 @@ P: while(TRUE){ v = new_value(); wait(mutex); agregar(LISTA, v); signal(mutex); 
 C: while(TRUE){ wait(lleno); wait(mutex); e = sacar(LISTA); signal(mutex) }
 ```
 
-### [Final 2023-12-12] Semáforos para el patrón PA, PB, PA, PC, PA, PD, PA, PB, ...
+### [Final 2023-12-12] Semáforos para el patrón PA, PB, PA, PC, PA, PD, PA, PB, ... — ✍️ respuesta propia (el PDF del final no trae solución)
 Opción 1 (desenrollando PA):
 ```
 sA = 1; sB = sC = sD = 0
@@ -182,7 +186,7 @@ PC: while(1){ wait(tC); wait(sOtro); C(); signal(tD); signal(sA) }
 PD: while(1){ wait(tD); wait(sOtro); D(); signal(tB); signal(sA) }
 ```
 
-### [Final 2024-02-20] Red social "Z": N usuarios y un analizador. El sistema es lento y deja de funcionar. Encontrar al menos 3 errores/mejoras (sin resincronizar)
+### [Final 2024-02-20] Red social "Z": N usuarios y un analizador. El sistema es lento y deja de funcionar. Encontrar al menos 3 errores/mejoras (sin resincronizar) — ✅ solución oficial
 ```
 Usuario (N): wait(mutexPosts); post = generarPost(); postear(post, postsNuevos); signal(hayPosts); mostrarEnPantalla(post); signal(mutexPosts)
 Analizador (1): wait(mutexPosts); wait(hayPosts); post = obtenerPost(postsNuevos); resultado = procesar(post); guardarEnDisco(resultado); signal(mutexPosts)
@@ -194,7 +198,7 @@ hayPosts = 0 (contador); mutexPosts = mutex
 - Analizador: los waits están al revés → si la cola está vacía se bloquea en `hayPosts` con el mutex tomado y ningún usuario puede postear → **deadlock** (por eso "deja de funcionar")
 - Analizador: hacer el signal del mutex justo después de `obtenerPost` (no retener el mutex mientras procesa y escribe en disco)
 
-### [Final 2024-07-23] "CrowdStrike": 4 instancias de Calculador (llegan en t0, 1, 2, 3). wait/signal = 4 ut, atómicas deshabilitando interrupciones; el resto de sentencias 2 ut. RR Q=3, 1 CPU, S = 2. Gantt y lista de bloqueados
+### [Final 2024-07-23] "CrowdStrike": 4 instancias de Calculador (llegan en t0, 1, 2, 3). wait/signal = 4 ut, atómicas deshabilitando interrupciones; el resto de sentencias 2 ut. RR Q=3, 1 CPU, S = 2. Gantt y lista de bloqueados — ✍️ respuesta propia (el PDF del final no trae solución)
 ```
 wait(S); total1++; total2++; signal(S)
 ```
@@ -222,7 +226,9 @@ C4       ---------WWWWbbbbbbbbbbbbbbbb---112-----2SSSSF
 | 43 | C3 termina signal | 1 | - |
 | 48 | C4 termina signal | 2 | - |
 
-### [Final 2025-02-25] Imprimir "Tun, tun, We will we will rock you!" permanentemente. "tun" lo emite el baterista o el percusionista (cualquiera); ambos toman los palillos del mismo lugar (de a uno)
+### [Final 2025-02-25] Imprimir "Tun, tun, We will we will rock you!" permanentemente. "tun" lo emite el baterista o el percusionista (cualquiera); ambos toman los palillos del mismo lugar (de a uno) — ✍️ respuesta propia (el PDF del final no trae solución)
+> ⚠️ **Aclaración de la consigna:** en el PDF la frase aparece como "We will we ~~will rock~~ you!" (con "will rock" tachado, parece un error de formato). Como el Vocalista 3 imprime "rock you!", se toma la frase completa: tun, tun, we, will, we, will, rock you!
+
 ```
 palillos = 1   // mutex
 tun = 2        // tuns habilitados en la vuelta
@@ -240,7 +246,7 @@ Vocalista 3:
 - Traza: tun, tun → we → will → we → will → rock you! → se habilitan 2 tuns de nuevo
 - Los vocalistas 1 y 2 aparecen dos veces por vuelta → se "desenrolla" su loop
 
-### [Final 2025-07-29] Un productor, 6 consumidores y un notificador
+### [Final 2025-07-29] Un productor, 6 consumidores y un notificador — ✍️ respuesta propia (el PDF del final no trae solución)
 ```
 Productor (1):   a = producir(); wait(B); depositar(lista, a); signal(B); signal(C)
 Consumidor (6):  wait(C); wait(B); e = retirar(lista); signal(B); procesar(e); signal(D)

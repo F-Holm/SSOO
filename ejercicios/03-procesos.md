@@ -25,16 +25,16 @@
 - Si ocurre un cambio de modo, hay un cambio de contexto. Puedo cambiar de contexto sin cambiar de modo
 - Procesos: al finalizar liberan sus recursos; por defecto no comparten memoria (ni con el padre); la unidad mínima de planificación son los hilos; son más estables y confiables que los hilos
 
-### [Final 2024-02-27] Dentro de una aplicación de varios procesos monohilo, en un sistema monoprocesador, no hay concurrencia
+### [Final 2024-02-27] Dentro de una aplicación de varios procesos monohilo, en un sistema monoprocesador, no hay concurrencia — ✅ solución oficial
 - **F**. Hay concurrencia: los procesos están activos en el mismo intervalo de tiempo aunque haya un solo procesador (oficial). No hay paralelismo
 
-### [Final 2024-07-30] Los procesos pueden cambiar del estado bloqueado a listo sólo si se ejecuta el planificador de corto plazo
+### [Final 2024-07-30] Los procesos pueden cambiar del estado bloqueado a listo sólo si se ejecuta el planificador de corto plazo — ✍️ respuesta propia (el PDF del final no trae solución)
 - **F**. El pasaje bloqueado → listo lo hace el SO al atender la interrupción de fin de evento (fin de E/S, signal de un semáforo). El planificador de corto plazo decide listo → ejecutando
 
-### [Final 2025-07-15] Si se quiere priorizar seguridad y estabilidad, es mejor una arquitectura multiproceso antes que multihilo
+### [Final 2025-07-15] Si se quiere priorizar seguridad y estabilidad, es mejor una arquitectura multiproceso antes que multihilo — ✍️ respuesta propia (el PDF del final no trae solución)
 - **V**. Los procesos están aislados: la falla o el memory leak de uno no afecta a los demás; los hilos comparten memoria y un hilo puede tirar abajo todo el proceso
 
-### [Final 2026-02-24] Evaluar la respuesta del LLM
+### [Final 2026-02-24] Evaluar la respuesta del LLM — ✅ solución oficial
 - Afirmación: "Una arquitectura multi-proceso será siempre recomendable sobre una multi-hilo"
 - LLM: "¡Exacto! Da mayor estabilidad y además mejora el rendimiento por la velocidad de creación y facilidad de comunicación entre procesos"
 - **Incorrecta**. Los procesos son más seguros y estables, pero los hilos son más rápidos de crear y se comunican sin intervención del SO (oficial)

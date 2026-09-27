@@ -1,6 +1,6 @@
 # 13 - Integradores / diseño (ejercicios)
 
-## [Final 2026-07-14] Diseñar los aspectos esenciales de un SO según los requerimientos (justificar cada decisión)
+## [Final 2026-07-14] Diseñar los aspectos esenciales de un SO según los requerimientos (justificar cada decisión) — ✅ solución oficial
 Requerimientos (resumidos):
 - Aplicaciones concurrentes que compartan recursos (archivos y memoria) **sin instalar bibliotecas externas**
 - Programas de duración variada: que la espera de los **breves** no sea grande
@@ -24,7 +24,7 @@ Resolución (oficial, hay muchas respuestas correctas):
     - ¿Qué tan importante es la eficiencia, en particular en las syscalls? Mucha → **monolítico**
     - ¿Qué tan importante es la estabilidad y la seguridad (fallas de módulos, accesos a memoria)? Mucha → **microkernel**
 
-## [Final 2025-12-09] Parte B: aspectos prácticos / relación con la industria / plan de estudios
+## [Final 2025-12-09] Parte B: aspectos prácticos / relación con la industria / plan de estudios — ✍️ respuesta propia (el PDF del final no trae solución)
 Preguntas abiertas (criterio: 6 V/F bien + 1 de estas con coherencia argumentativa). Ideas para armar la respuesta:
 
 ### 1) Describir el TP de la materia y al menos tres unidades del programa relacionadas (máx. 1 carilla)
@@ -42,6 +42,6 @@ Preguntas abiertas (criterio: 6 V/F bien + 1 de estas con coherencia argumentati
 - Arquitectura: ciclo de instrucción e interrupciones (se atienden al final de la instrucción), modos de ejecución y PSW, jerarquía de memoria/caché (principio de localidad, TLB), DMA y buses, MMU
 - Paradigmas: concurrencia; el paradigma funcional (inmutabilidad → sin condiciones de carrera, condiciones de Bernstein); polimorfismo/interfaces (VFS, drivers con una interfaz común); encapsulamiento (monitores); manejo de memoria dinámica y punteros en C (heap, memory leaks)
 
-## [Final 2026-07-14] Pregunta bonus: relacionar tres asignaturas cursadas con Sistemas Operativos (máx. 1 carilla)
+## [Final 2026-07-14] Pregunta bonus: relacionar tres asignaturas cursadas con Sistemas Operativos (máx. 1 carilla) — ✍️ respuesta propia (el PDF del final no trae solución)
 - Criterios posibles: conceptos de otra materia usados en el TP; conceptos similares a los teóricos; conocimientos de SO útiles en otra materia
 - Ejemplos: Arquitectura de Computadores (interrupciones, MMU, DMA), Algoritmos y Estructuras de Datos (colas, listas, árboles B y hash en directorios), Paradigmas (concurrencia, funcional), Redes/Comunicaciones (sockets del TP), Bases de Datos (transacciones ↔ journaling, locks), Sintaxis y Semántica (compilación/enlazado, address binding)
