@@ -499,7 +499,7 @@ b) NTT
 - P3: ready 2-5 + 8-13 + 16-18 = 10; CPU 8 → 18/8 = **2,25**
 - El perjudicado es **P1** (IO bound, ráfagas cortas): RR favorece a los CPU bound; cada vez que vuelve de E/S va al final de la cola
 
-c) Propuesta: colas multinivel realimentadas con desalojo por quantum: cola 1 (prioridad) para los que vuelven de E/S con RR q=3, cola 2 para nuevos/fin de quantum con RR q=3, sin desalojo entre colas
+c) Propuesta: **VRR con Q = 3, pero dando el quantum completo al volver de E/S** (en VRR estándar la cola auxiliar recibe Q − lo ya usado; más abajo está el VRR estándar, que con estos datos no mejora)
 
 | | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -509,7 +509,22 @@ c) Propuesta: colas multinivel realimentadas con desalojo por quantum: cola 1 (p
 
 - P1: ready 7-8 + 14-16 = 3 → (3+5)/5 = **1,6** (mejora)
 - P2: 1 + 5 + 4 + 1 = 11 → **1,85**; P3: 3 + 5 + 3 = 11 → 19/8 = **2,375**
-- Ojo: con VRR "puro" (cola aux con q' = 3 − 2 = 1) P1 ejecuta 1 sola unidad al volver de E/S, se corta y vuelve al final de la cola. Además P2 pide la E/S en t18 con el dispositivo ocupado por P1 hasta t20, así que espera. Resultado: NTT de P1 = (7 + 5) / 5 = 2,4, igual que con RR (no mejora con estos datos)
+**¿Y con VRR (Q = 3)?** Es el algoritmo "clásico" para favorecer a los IO bound, pero con estos datos **no mejora a P1**:
+
+| | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P1 | X | X | io | io | io | io | io | – | X | – | – | – | – | – | – | X | io | io | io | io | X | F |  |  |  |  |  |
+| P2 |  | – | X | X | X | – | – | – | – | X | X | X | – | – | – | – | X | X | esp | esp | io | X | X | X | X | X | F |
+| P3 |  |  | – | – | – | X | X | X | – | – | – | – | X | X | X | – | – | – | X | X | F |  |  |  |  |  |  |
+
+(esp = esperando el dispositivo de E/S, ocupado por P1)
+
+- t7: P1 vuelve de E/S a la cola auxiliar con Q' = 3 − 2 = 1 (en su primera ráfaga usó 2 de 3)
+- t8: P1 ejecuta desde la aux, pero su ráfaga es de 2 y Q' = 1 → se corta y vuelve **al final de la cola normal** [P2, P3, P1] → espera de t9 a t15
+- t18: P2 pide E/S pero el dispositivo está ocupado por P1 hasta t20 → espera
+- NTT de P1 = (1 + 6 + 5) / 5 = **2,4**, igual que con RR
+- VRR sirve cuando la ráfaga que sigue a la E/S entra en lo que le quedaba de quantum; acá no entra. Por eso la propuesta de arriba es VRR dando el quantum completo al volver de E/S
+- En el final se puede proponer VRR, siempre que se justifique con la simulación (y se indique que en este caso no mejora)
 
 </details>
 
@@ -597,10 +612,10 @@ a)
 
 | | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| ULTA1 | X | X | io | X | io | io |  | X | io |  |  |  |  |  |  | X | X |  |  |  | X | X | F |  |  |
-| ULTA2 |  |  |  |  |  |  |  |  |  | X | X | X | io | io | X | F |  |  |  |  |  |  |  |  |  |
 | KLTB1 |  |  |  | – | X | X | X |  | X | io | io |  | X | X | F |  |  |  |  |  |  |  |  |  |  |
 | KLTB2 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | – | X | X | X |  |  | X | X | F |
+| ULTA1 | X | X | io | X | io | io |  | X | io |  |  |  |  |  |  | X | X |  |  |  | X | X | F |  |  |
+| ULTA2 |  |  |  |  |  |  |  |  |  | X | X | X | io | io | X | F |  |  |  |  |  |  |  |  |  |
 
 - t0 A1 (2 < 3). t2-3 E/S de A1 → A bloqueado y B todavía no llegó → CPU ociosa
 - t3: vuelve A (fin E/S) y llega KLTB1 (nuevo) → primero A (vuelve de E/S > nuevo). A1 (1 < 3) → 3-4, E/S 4-6
@@ -655,9 +670,9 @@ a)
 
 | | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| KLT2 |  |  | X | X |  |  | X | io | X | X | F |  |  |  |
 | ULT1.1 | X | X |  |  | X | X | io |  |  |  |  | X | X | F |
 | ULT1.2 |  |  |  |  |  |  |  | X | io |  | X | F |  |  |
-| KLT2 |  |  | X | X |  |  | X | io | X | X | F |  |  |  |
 
 - ULT1.1 sigue en 4-6 aunque llegó ULT1.2 (sin desalojo). t7 la biblioteca replanifica: 1.2 (1) < 1.1 (2). t10: 1.2 (1) < 1.1 (2)
 
@@ -687,10 +702,10 @@ a)
 
 | | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| ULTB2 | X | X | io | io | X |  | X | X | F |  |  |  |  |  |  |  |  |  |
+| ULTA1 |  |  |  |  |  | X | io |  |  |  |  |  |  | X | X | F |  |  |
 | ULTA2 |  |  | X | X | io |  |  |  |  | X | X | F |  |  |  |  |  |  |
 | ULTB1 |  |  |  |  |  |  |  |  | X |  |  | X | X | io |  | X | X | F |
-| ULTA1 |  |  |  |  |  | X | io |  |  |  |  |  |  | X | X | F |  |  |
+| ULTB2 | X | X | io | io | X |  | X | X | F |  |  |  |  |  |  |  |  |  |
 
 Detalle:
 
@@ -733,10 +748,10 @@ a)
 
 | | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| KLTA1 |  |  |  |  |  |  |  | X | io |  |  | X | X | F |  |
+| KLTA2 |  |  | X | X | X | io |  |  | X | F |  |  |  |  |  |
 | ULTB1 | X |  |  |  |  | X | X | io |  | X | F |  |  |  |  |
 | ULTB2 |  | X | io | io |  |  |  |  |  |  | X |  |  | X | F |
-| KLTA2 |  |  | X | X | X | io |  |  | X | F |  |  |  |  |  |
-| KLTA1 |  |  |  |  |  |  |  | X | io |  |  | X | X | F |  |
 
 - t1: llega ULTB2 (1) a la biblioteca → desaloja a B1 (restan 2). t2 B2 pide E/S → B bloqueado (y fin de quantum)
 - t4: simultaneidad: fin de quantum KLTA2, fin E/S de B, llega KLTA1 → cola [KLTA2 (en ejecución), B (vuelve de E/S), KLTA1 (nuevo)]
