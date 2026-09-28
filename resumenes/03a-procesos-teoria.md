@@ -87,3 +87,6 @@ new -> ready <-> running -> exit
 - Procesos: más estables y confiables (aislados); la muerte de uno no afecta a los demás
 - Arquitectura multiproceso > multihilo si importa seguridad/estabilidad; multihilo si importa rendimiento (creación y comunicación más rápidas)
 - La unidad mínima de planificación son los hilos
+
+---
+[⬆ Volver al índice de resúmenes](00-indice.md) · [Índice general](../README.md)

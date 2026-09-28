@@ -102,3 +102,6 @@ C: wait(mutexC); wait(mutexC); printf("C"); signal(mutexA)
 - Si el enunciado da duraciones de wait/signal, la syscall se ejecuta entera aunque el semáforo quede negativo; el proceso se bloquea al terminar el wait
 - Anotar en cada instante: valor del semáforo y lista de bloqueados
 - signal despierta al primero de la cola (FIFO) → pasa a ready (al final de la cola de listos)
+
+---
+[⬆ Volver al índice de resúmenes](00-indice.md) · [Índice general](../README.md)

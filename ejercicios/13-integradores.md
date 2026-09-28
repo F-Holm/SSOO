@@ -86,3 +86,6 @@ Preguntas abiertas (criterio: 6 V/F bien + 1 de estas con coherencia argumentati
 - Ejemplos: Arquitectura de Computadores (interrupciones, MMU, DMA), Algoritmos y Estructuras de Datos (colas, listas, árboles B y hash en directorios), Paradigmas (concurrencia, funcional), Redes/Comunicaciones (sockets del TP), Bases de Datos (transacciones ↔ journaling, locks), Sintaxis y Semántica (compilación/enlazado, address binding)
 
 </details>
+
+---
+[⬆ Volver al índice de ejercicios](00-indice.md) · [Índice general](../README.md)

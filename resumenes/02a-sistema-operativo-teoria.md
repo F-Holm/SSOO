@@ -81,3 +81,6 @@
   - − Performance: los módulos se comunican por mensajes a través del kernel → más cambios de modo y de contexto → más overhead. Mayor complejidad
   - No mejora el rendimiento respecto al monolítico
 - Para elegir: ¿importa más la performance de las syscalls (→ monolítico) o la estabilidad/seguridad (→ microkernel)?
+
+---
+[⬆ Volver al índice de resúmenes](00-indice.md) · [Índice general](../README.md)

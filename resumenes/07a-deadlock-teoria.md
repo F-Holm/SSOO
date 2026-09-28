@@ -75,3 +75,6 @@
 ## Prevención y detección pueden generar starvation
 - Prevención: retención y espera (esperar a tener todo)
 - Detección/recuperación: si siempre se elige la misma víctima
+
+---
+[⬆ Volver al índice de resúmenes](00-indice.md) · [Índice general](../README.md)

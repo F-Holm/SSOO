@@ -86,3 +86,6 @@ signal(s): s.count++; if (s.count <= 0) desbloquear(uno)
 
 ## Locks de archivos (ver FS)
 - Mejor que un mutex para archivos: granularidad por rango de bytes, compartidos (lectura) vs exclusivos (escritura), entre procesos no relacionados
+
+---
+[⬆ Volver al índice de resúmenes](00-indice.md) · [Índice general](../README.md)

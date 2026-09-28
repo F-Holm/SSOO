@@ -112,3 +112,6 @@ Disco
 3. Obtener bloques libres y asignarlos
 4. Escribir bloques, actualizar atributos (tamaño, fechas)
 5. Cerrar: actualizar tablas
+
+---
+[⬆ Volver al índice de resúmenes](00-indice.md) · [Índice general](../README.md)

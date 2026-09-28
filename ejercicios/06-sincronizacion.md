@@ -509,3 +509,6 @@ Notificador (1): wait(D); wait(B); notificar(lista_mensajes); signal(B)
 - e) Sí. Si el consumidor hace `wait(B)` antes que `wait(C)` con la lista vacía: toma B (B=0), hace wait(C) (C=−1) y se bloquea con el mutex tomado. El productor produce, hace wait(B) (B=−1) y se bloquea → nadie hará signal(C) ni signal(B) → **deadlock** (y los demás consumidores y el notificador quedan bloqueados en B)
 
 </details>
+
+---
+[⬆ Volver al índice de ejercicios](00-indice.md) · [Índice general](../README.md)

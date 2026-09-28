@@ -222,3 +222,6 @@ Opciones:
 - Sugeridos: el SO no los hace cumplir, sirven solo si todos los procesos los usan (como un semáforo, responsabilidad del programador), menos overhead. Obligatorios: el SO los garantiza incluso contra procesos que no los usan, más overhead
 
 </details>
+
+---
+[⬆ Volver al índice de ejercicios](00-indice.md) · [Índice general](../README.md)

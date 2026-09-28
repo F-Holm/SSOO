@@ -962,3 +962,6 @@ C        X.iX.XXF
 b) Grafo en t4: R (2 instancias) → asignado a A y a B; C → R (solicitud)
 
 </details>
+
+---
+[⬆ Volver al índice de ejercicios](00-indice.md) · [Índice general](../README.md)

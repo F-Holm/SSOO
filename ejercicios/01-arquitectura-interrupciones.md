@@ -191,3 +191,6 @@ Opciones:
 - **Incorrecta**. La atomicidad de una instrucción no depende de las interrupciones: solo se atienden al finalizar la instrucción en curso (oficial)
 
 </details>
+
+---
+[⬆ Volver al índice de ejercicios](00-indice.md) · [Índice general](../README.md)

@@ -89,3 +89,6 @@
 
 ## Overhead
 - Overhead = procesamiento extra "innecesario" (no útil para el usuario), ej: cambios de contexto, planificación
+
+---
+[⬆ Volver al índice de resúmenes](00-indice.md) · [Índice general](../README.md)

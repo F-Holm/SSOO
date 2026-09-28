@@ -211,3 +211,6 @@
   Si no hay otra cosa útil para hacer, queda en espera activa consumiendo CPU
 
 </details>
+
+---
+[⬆ Volver al índice de ejercicios](00-indice.md) · [Índice general](../README.md)

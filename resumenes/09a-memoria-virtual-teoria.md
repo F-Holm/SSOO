@@ -92,3 +92,6 @@
 - **Compartir páginas**: procesos del mismo programa comparten páginas de código (read-only) → mismo marco en ambas tablas
 - **Copy-on-write** (fork): el hijo comparte los marcos del padre en solo lectura; se copia una página recién cuando alguien la escribe
 - **Archivos mapeados en memoria** (`mmap`): ver FS
+
+---
+[⬆ Volver al índice de resúmenes](00-indice.md) · [Índice general](../README.md)

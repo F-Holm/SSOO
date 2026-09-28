@@ -312,3 +312,6 @@ c) Liberar los marcos 9, 11 y 17 es liberar **toda la pila**: el proceso siempre
 d) Fragmentación interna máxima = 4 segmentos × (256 − 1) = **1020 bytes**
 
 </details>
+
+---
+[⬆ Volver al índice de ejercicios](00-indice.md) · [Índice general](../README.md)

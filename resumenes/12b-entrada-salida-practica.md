@@ -26,3 +26,6 @@
 - LOOK: 45, 50, 85, 30, 20, 10 → 5+5+35+55+10+10 = **120 ms**
 - C-LOOK: 45, 50, 85, salto a 10, 20, 30 → 5+5+35+10+10 = **65 ms** (+75 si se cuenta el salto)
 - FCFS (cabezal en 10, pedidos 50, 20, 30, 85, 45): 40+30+10+55+40 = **175 ms**
+
+---
+[⬆ Volver al índice de resúmenes](00-indice.md) · [Índice general](../README.md)

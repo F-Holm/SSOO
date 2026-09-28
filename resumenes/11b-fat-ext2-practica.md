@@ -56,3 +56,6 @@
 - 7) c: Σ (cant. punteros × tam bloque) con bloques de 1 KiB y 256 punteros por bloque = 12 KiB + 256 KiB + 64 MiB + 16 GiB 
 
 > ⚠️ **Error en el apunte (06-13):** figuraba "54 MiB"; es 256² KiB = 64 MiB.
+
+---
+[⬆ Volver al índice de resúmenes](00-indice.md) · [Índice general](../README.md)

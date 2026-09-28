@@ -64,3 +64,6 @@
 
 ## Fork / copy-on-write
 - El hijo apunta a los mismos marcos que el padre (marcados solo lectura). No necesita frames nuevos hasta que alguien escriba
+
+---
+[⬆ Volver al índice de resúmenes](00-indice.md) · [Índice general](../README.md)

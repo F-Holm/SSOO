@@ -499,3 +499,6 @@ Modificados: bloque del directorio (700), tabla de inodos (100 y 101), bitmap de
 - Ver [resumen 11b](../resumenes/11b-fat-ext2-practica.md)
 
 </details>
+
+---
+[⬆ Volver al índice de ejercicios](00-indice.md) · [Índice general](../README.md)

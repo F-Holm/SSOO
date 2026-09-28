@@ -567,3 +567,6 @@ Referencias: 3000 → p0; 4321 → p1; 18123 → p4; 20495 → p5 offset 15 → 
 - iii) El segmento 0 (nunca modificado) podría ser el **código**
 
 </details>
+
+---
+[⬆ Volver al índice de ejercicios](00-indice.md) · [Índice general](../README.md)

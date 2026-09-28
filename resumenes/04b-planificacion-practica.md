@@ -76,3 +76,6 @@
 - Si wait/signal son atómicos deshabilitando interrupciones → el fin de quantum no los corta (se atiende al terminar la syscall)
 - Locks exclusivos que no se liberan + pedidos cruzados → deadlock (marcar en el Gantt)
 - Recurso con N instancias: si están todas ocupadas, el proceso espera (cola del recurso)
+
+---
+[⬆ Volver al índice de resúmenes](00-indice.md) · [Índice general](../README.md)

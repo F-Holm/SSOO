@@ -143,3 +143,6 @@ Opciones:
 - **Incorrecta**. Los procesos son más seguros y estables, pero los hilos son más rápidos de crear y se comunican sin intervención del SO (oficial)
 
 </details>
+
+---
+[⬆ Volver al índice de ejercicios](00-indice.md) · [Índice general](../README.md)

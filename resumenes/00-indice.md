@@ -23,3 +23,6 @@ Ejercicios de final/parcial resueltos por tema: [../ejercicios](../ejercicios/)
 - TP se prueba en el laboratorio de Medrano. Dudas del TP: sábados en campus o por Discord
 - Promoción con 8 y 8 o 8 y 7 + complemento. Coloquio de promoción obligatorio con preguntas teóricas (de razonamiento)
 - Final: 90 minutos. Formato típico: 5 V/F justificados + 2 ejercicios prácticos
+
+---
+[⬆ Volver al índice general](../README.md)

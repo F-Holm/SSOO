@@ -53,3 +53,6 @@
 ## Tabla invertida
 - Entradas = cantidad de marcos (fija)
 - Cada entrada: PID + página (+ puntero de colisión si hay hash)
+
+---
+[⬆ Volver al índice de resúmenes](00-indice.md) · [Índice general](../README.md)

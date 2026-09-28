@@ -66,3 +66,6 @@
 - RAID 3/4: bandas + disco de paridad dedicado (cuello de botella), tolera 1 disco
 - RAID 5: paridad distribuida en todos los discos, tolera 1 disco (cualquiera), overhead medio
 - RAID 6: doble paridad distribuida, tolera 2 discos
+
+---
+[⬆ Volver al índice de resúmenes](00-indice.md) · [Índice general](../README.md)

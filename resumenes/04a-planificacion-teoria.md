@@ -103,3 +103,6 @@
 ## Condiciones de carrera y el planificador
 - El planificador puede interrumpir en medio de una operación que debía ser atómica → condición de carrera (aún en monoprocesador). Si están bien sincronizados el resultado es correcto sin importar el orden
 - El proceso no sabe que fue bloqueado/desalojado (se guarda y restaura su contexto)
+
+---
+[⬆ Volver al índice de resúmenes](00-indice.md) · [Índice general](../README.md)

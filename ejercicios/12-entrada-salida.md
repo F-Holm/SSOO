@@ -145,3 +145,6 @@ b) Tiempo SCAN (la resolución oficial pega la vuelta en el último pedido, el c
 - Si SCAN llega hasta el último cilindro (899) antes de volver: (899 − 23) + (899 − 5) = 876 + 894 = **1770 ms**
 
 </details>
+
+---
+[⬆ Volver al índice de ejercicios](00-indice.md) · [Índice general](../README.md)

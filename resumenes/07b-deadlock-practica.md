@@ -44,3 +44,6 @@
 - Encontrar una traza: P1 toma A, se lo interrumpe (ej: RR o FIFO con E/S), P2 toma B, P2 pide A (bloq), P1 pide B (bloq)
 - Solución: mismo orden de pedido en todos (prevención de espera circular), achicar la SC, o sacar el mutex si ya hay orden garantizado
 - Con semáforos con bloqueo el deadlock no consume CPU (no afecta a otros procesos). Con espera activa → livelock que sí consume CPU
+
+---
+[⬆ Volver al índice de resúmenes](00-indice.md) · [Índice general](../README.md)

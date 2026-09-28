@@ -424,3 +424,6 @@ b) Con disponibles (1,0,9,4):
 - c) [1,1,1,2] + [1,1,2,0] = [2,2,3,2] → P3 termina → [3,4,6,3] → P5 → [4,5,7,5] → P1 → **deadlock solucionado**
 
 </details>
+
+---
+[⬆ Volver al índice de ejercicios](00-indice.md) · [Índice general](../README.md)

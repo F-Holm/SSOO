@@ -22,3 +22,6 @@ Leyenda: ✅ solución oficial del final · ✍️ respuesta propia (el PDF del 
 | 13 | Integradores / diseño de un SO | [13-integradores.md](13-integradores.md) |
 
 Resúmenes de teoría y práctica: [../resumenes](../resumenes/00-indice.md)
+
+---
+[⬆ Volver al índice general](../README.md)

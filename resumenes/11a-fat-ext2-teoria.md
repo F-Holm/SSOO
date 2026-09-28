@@ -110,3 +110,6 @@ Sector de arranque | Grupo de bloques 0 | Grupo de bloques 1 | ... | Grupo de bl
 | Acceso directo | Recorrer cadena en memoria | Punteros (más rápido en promedio con FAT en RAM para archivos chicos) |
 | Estructuras en memoria | La FAT entera (puede ser muy grande) | Inodos de archivos abiertos |
 | Overhead | Menor | Mayor |
+
+---
+[⬆ Volver al índice de resúmenes](00-indice.md) · [Índice general](../README.md)

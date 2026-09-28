@@ -89,3 +89,6 @@ pthread_detach(hilo);
 - KLT si se necesita paralelismo o que la E/S no bloquee a todos
 - Si se pide concurrencia compartiendo recursos **sin instalar bibliotecas** → KLTs
 - Permisos sobre archivos: son del proceso (tabla de archivos abiertos por proceso) → iguales para todos sus hilos
+
+---
+[⬆ Volver al índice de resúmenes](00-indice.md) · [Índice general](../README.md)

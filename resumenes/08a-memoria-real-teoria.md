@@ -116,3 +116,6 @@
 | Paginación | Frames fijos, páginas del mismo tamaño | Sin frag. externa, no contiguas | Frag. interna en la última página, más estructuras |
 
 - Overhead de menor a mayor: particiones fijas < particiones dinámicas / buddy < segmentación paginada
+
+---
+[⬆ Volver al índice de resúmenes](00-indice.md) · [Índice general](../README.md)

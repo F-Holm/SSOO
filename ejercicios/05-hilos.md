@@ -337,3 +337,6 @@ Opciones:
 - 3) **Incorrecta**: la planificación de ULTs la hace la biblioteca en modo usuario, sin cambio de modo → es justamente una ventaja (menor latencia/overhead)
 
 </details>
+
+---
+[⬆ Volver al índice de ejercicios](00-indice.md) · [Índice general](../README.md)
