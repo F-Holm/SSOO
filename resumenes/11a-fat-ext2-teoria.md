@@ -100,6 +100,7 @@ Sector de arranque | Grupo de bloques 0 | Grupo de bloques 1 | ... | Grupo de bl
 - Un archivo vacío no necesita bloques de datos: con todos los bloques ocupados igual se puede crear (si hay inodo libre y lugar en el directorio)
 
 ## FAT vs UFS
+
 | | FAT | UFS/EXT2 |
 |---|---|---|
 | Asignación | Enlazada (tabla FAT) | Indexada multinivel (inodos) |

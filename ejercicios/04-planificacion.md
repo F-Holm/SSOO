@@ -1,6 +1,6 @@
 # 04 - Planificación (ejercicios)
 
-Convención de los Gantt: columna `t` = intervalo [t, t+1). `X` = CPU, `io` = E/S, `F` = terminó (en el instante de esa columna).
+Convención de los Gantt: columna `t` = intervalo [t, t+1). `X` = CPU, `io` = E/S, `F` = terminó (en el instante de esa columna), `–` = en la cola de listos.
 
 **Desempate** (en todos los Gantt): 1° el proceso en ejecución (viene de CPU: fin de quantum/desalojo), 2° el que vuelve de E/S, 3° el nuevo. Dentro de la misma categoría, FIFO.
 
@@ -438,6 +438,7 @@ Opciones:
 ## Prácticos
 
 ### [Final 2022-08-02 / 2023-04-25] RR Q=2, 2 procesos con ULTs, biblioteca SJF sin desalojo que maneja sus E/S. Gantt. ¿Hay simultaneidad de eventos? — ✅ solución oficial
+
 | Hilo | Llegada | CPU | E/S | CPU |
 |---|---|---|---|---|
 | P1-u1 | 7 | 1 | 1 | 1 |
@@ -463,6 +464,7 @@ Opciones:
 </details>
 
 ### [Final 2022-12-06] RR q=3. Gantt, NTT de cada proceso, ¿alguno perjudicado? Proponer otro algoritmo con desalojo y ráfagas limitadas a 3 que lo mejore — ✍️ respuesta propia (el PDF del final no trae solución)
+
 | | Llegada | CPU | E/S | CPU | E/S | CPU |
 |---|---|---|---|---|---|---|
 | P1 | 0 | 2 | 5 | 2 | 4 | 1 |
@@ -482,14 +484,14 @@ Opciones:
 <summary>Ver respuesta</summary>
 
 a) RR q=3 (1 CPU, 1 dispositivo de E/S)
-```
-t      0         1         2
-       01234567890123456789012345
-P1     XXiiiii----XXiiii---XF
-P2      -XXX---XXX-----XXi--XXXXXF
-P3       ---XXX-----XXX--XXF
-```
-(`-` = en ready). Colas: t5 [P3,P2] → t7 llega P1 → t8 [P2,P1,P3] → t11 [P1,P3,P2] → t13 [P3,P2] → t16 [P2,P3] + P1 en t17 → t19 P2 → [P1,P2]
+
+| | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P1 | X | X | io | io | io | io | io | – | – | – | – | X | X | io | io | io | io | – | – | – | X | F |  |  |  |  |  |
+| P2 |  | – | X | X | X | – | – | – | X | X | X | – | – | – | – | – | X | X | io | – | – | X | X | X | X | X | F |
+| P3 |  |  | – | – | – | X | X | X | – | – | – | – | – | X | X | X | – | – | X | X | F |  |  |  |  |  |  |
+
+(– = en ready). Colas: t5 [P3,P2] → t7 llega P1 → t8 [P2,P1,P3] → t11 [P1,P3,P2] → t13 [P3,P2] → t16 [P2,P3] + P1 en t17 → t19 P2 → [P1,P2]
 
 b) NTT
 - P1: ready 7-11 + 17-20 = 7; CPU 5 → (7+5)/5 = **2,4**
@@ -498,13 +500,13 @@ b) NTT
 - El perjudicado es **P1** (IO bound, ráfagas cortas): RR favorece a los CPU bound; cada vez que vuelve de E/S va al final de la cola
 
 c) Propuesta: colas multinivel realimentadas con desalojo por quantum: cola 1 (prioridad) para los que vuelven de E/S con RR q=3, cola 2 para nuevos/fin de quantum con RR q=3, sin desalojo entre colas
-```
-t      0         1         2
-       01234567890123456789012345
-P1     XXiiiii-XXiiii--XF
-P2      -XXX-----XXX----XXi-XXXXXF
-P3       ---XXX-----XXX---XXF
-```
+
+| | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P1 | X | X | io | io | io | io | io | – | X | X | io | io | io | io | – | – | X | F |  |  |  |  |  |  |  |  |  |
+| P2 |  | – | X | X | X | – | – | – | – | – | X | X | X | – | – | – | – | X | X | io | – | X | X | X | X | X | F |
+| P3 |  |  | – | – | – | X | X | X | – | – | – | – | – | X | X | X | – | – | – | X | X | F |  |  |  |  |  |
+
 - P1: ready 7-8 + 14-16 = 3 → (3+5)/5 = **1,6** (mejora)
 - P2: 1 + 5 + 4 + 1 = 11 → **1,85**; P3: 3 + 5 + 3 = 11 → 19/8 = **2,375**
 - Ojo: con VRR "puro" (cola aux con q' = 3 − 2 = 1) P1 ejecuta 1 sola unidad al volver de E/S, se corta y vuelve al final de la cola. Además P2 pide la E/S en t18 con el dispositivo ocupado por P1 hasta t20, así que espera. Resultado: NTT de P1 = (7 + 5) / 5 = 2,4, igual que con RR (no mejora con estos datos)
@@ -512,6 +514,7 @@ P3       ---XXX-----XXX---XXF
 </details>
 
 ### [Final 2023-02-14] RR Q=3; dos procesos con ULTs, biblioteca SJF sin desalojo — ✍️ respuesta propia (el PDF del final no trae solución)
+
 | Proceso | Hilo | Llegada | CPU | E/S | CPU |
 |---|---|---|---|---|---|
 | 1 | ULT1.A | 0 | 2 | 2 | 1 |
@@ -545,6 +548,7 @@ P3       ---XXX-----XXX---XXF
 </details>
 
 ### [Final 2023-02-28] SJF sin desalojo; KLTs que acceden a archivos con lock exclusivo que no cierran. Cada acceso 1 ut + 1 ut si el archivo nunca fue abierto. El dispositivo no permite accesos en paralelo. Todos listos en t0 — ✅ solución oficial
+
 | | | CPU | E/S | CPU | E/S | CPU |
 |---|---|---|---|---|---|---|
 | P1 | KLT1 | 1 | arch1 | 1 | arch2 | 1 |
@@ -559,12 +563,14 @@ P3       ---XXX-----XXX---XXF
 <summary>Ver respuesta</summary>
 
 a)
-```
-t     0123456789
-K1    XiiX.            (t4 pide arch2: lo tiene P2 → bloqueado)
-K2        XXX.         (t7 pide arch2 → bloqueado)
-K3     XXii--XX.       (t9 pide arch1: lo tiene P1 → bloqueado)
-```
+
+| | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| K1 | X | io | io | X | bloq | bloq | bloq | bloq | bloq | bloq |
+| K2 | – | – | – | – | X | X | X | bloq | bloq | bloq |
+| K3 | – | X | X | io | io | – | – | X | X | bloq |
+
+- K1 en t4 y K2 en t7 piden arch2 (lock de P2) → bloqueados; K3 en t9 pide arch1 (lock de P1) → bloqueado (bloq = esperando el lock)
 - t0 K1 (ráfaga 1); t1-3 E/S arch1 (abre: 1+1) → lock arch1 para P1. t1 K3 (2 < 3); t3-5 E/S arch2 (abre) → lock arch2 para P2
 - t3 K1, t4 K2 (sin desalojo corre 4-7 aunque K3 vuelve en t5), t7 K3
 - **Deadlock**: P1 (K1 y K2) espera arch2 que tiene P2; P2 (K3) espera arch1 que tiene P1
@@ -574,6 +580,7 @@ b) Con lock compartido cambia en **t = 4/5**: en t4 K1 puede abrir arch2 (ya abi
 </details>
 
 ### [Final 2023-05-23 / 2024-02-27] RR Q=3. El proceso A tiene 2 ULTs (biblioteca SJF sin desalojo). a) Gantt. b) Con jacketing, ¿cuándo empieza KLTB1? — ✅ solución oficial
+
 | Proceso | Hilo | Arribo | CPU | E/S | CPU | E/S | CPU | E/S | CPU |
 |---|---|---|---|---|---|---|---|---|---|
 | A | ULTA1 | 0 | 2 | 1 | 1 | 2 | 1 | 1 | 4 |
@@ -587,14 +594,14 @@ b) Con lock compartido cambia en **t = 4/5**: en t4 K1 puede abrir arch2 (ya abi
 <summary>Ver respuesta</summary>
 
 a)
-```
-t        0         1         2
-         0123456789012345678901234
-ULTA1    XXiXii.Xi......XX...XXF
-ULTA2    .........XXXiiXF
-KLTB1       -XXX.Xii.XXF
-KLTB2                    -XXX..XXF
-```
+
+| | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| ULTA1 | X | X | io | X | io | io |  | X | io |  |  |  |  |  |  | X | X |  |  |  | X | X | F |  |  |
+| ULTA2 |  |  |  |  |  |  |  |  |  | X | X | X | io | io | X | F |  |  |  |  |  |  |  |  |  |
+| KLTB1 |  |  |  | – | X | X | X |  | X | io | io |  | X | X | F |  |  |  |  |  |  |  |  |  |  |
+| KLTB2 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | – | X | X | X |  |  | X | X | F |
+
 - t0 A1 (2 < 3). t2-3 E/S de A1 → A bloqueado y B todavía no llegó → CPU ociosa
 - t3: vuelve A (fin E/S) y llega KLTB1 (nuevo) → primero A (vuelve de E/S > nuevo). A1 (1 < 3) → 3-4, E/S 4-6
 - KLTB1 4-7 (quantum), A 7-8 (A1: 1), KLTB1 8-9 → E/S 9-11
@@ -610,13 +617,12 @@ b) Con jacketing KLTB1 empieza en **t = 6**: en t2 A no se bloquea (sigue A2 has
 <details>
 <summary>Ver respuesta</summary>
 
-```
-t     0         1
-      012345678901234
-P1    XX...X.....X
-P2       X...X.X...X
-SO      S.S.S.S.S.S.S
-```
+| | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P1 | X | X |  |  |  | X |  |  |  |  |  | X |  |  |  |
+| P2 |  |  |  | X |  |  |  | X |  | X |  |  |  | X |  |
+| SO |  |  | SO |  | SO |  | SO |  | SO |  | SO |  | SO |  | SO |
+
 - 2-3 SO: fin de quantum de P1 → P2
 - 4-5 SO: syscall E/S de P2 (E/S 5-6) → P1
 - 6-7 SO: syscall E/S de P1 (E/S 7-8) + fin de E/S de P2 → P2
@@ -629,6 +635,7 @@ SO      S.S.S.S.S.S.S
 </details>
 
 ### [Final 2023-09-27 / 2024-03-05] RR Q=2, biblioteca de ULTs SJF sin desalojo, E/S a través de la biblioteca — ✅ solución oficial
+
 | Proceso | Hilo | Arribo | CPU | E/S | CPU |
 |---|---|---|---|---|---|
 | 1 | ULT1.1 | 0 | 4 | 1 | 2 |
@@ -645,13 +652,13 @@ SO      S.S.S.S.S.S.S
 <summary>Ver respuesta</summary>
 
 a)
-```
-t        0         1
-         01234567890123
-ULT1.1   XX..XXi....XXF
-ULT1.2    ......Xi.XF
-KLT2      .XX..XiXXF
-```
+
+| | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| ULT1.1 | X | X |  |  | X | X | io |  |  |  |  | X | X | F |
+| ULT1.2 |  |  |  |  |  |  |  | X | io |  | X | F |  |  |
+| KLT2 |  |  | X | X |  |  | X | io | X | X | F |  |  |  |
+
 - ULT1.1 sigue en 4-6 aunque llegó ULT1.2 (sin desalojo). t7 la biblioteca replanifica: 1.2 (1) < 1.1 (2). t10: 1.2 (1) < 1.1 (2)
 
 b) Llamadas a la biblioteca (oficial): t1 (creación de ULT1.2, sin syscall), t6 (wrapper de E/S → syscall), t7 (replanifica), t8 (wrapper de E/S → syscall), t10 (replanifica), t11 (fin de ULT1.2)
@@ -663,6 +670,7 @@ d) Si ULT1.1 hace `exit()` en t1 termina todo el proceso 1 → solo sigue el pro
 </details>
 
 ### [Final 2023-12-19] VRR Q=3, 2 procesos con ULTs (biblioteca SJF sin desalojo, maneja sus E/S). Un solo disco. a) Gantt b) ¿En qué instantes se aplica SJF? c) ¿Cuándo cambia con jacketing? — ✍️ respuesta propia (el PDF del final no trae solución)
+
 | Proceso | Hilo | Arribo | CPU | Disco | CPU |
 |---|---|---|---|---|---|
 | A | ULTA1 | 5 | 1 | 1 | 2 |
@@ -676,16 +684,16 @@ d) Si ULT1.1 hace `exit()` en t1 termina todo el proceso 1 → solo sigue el pro
 Supuestos: al volver de E/S el proceso va a la cola aux con Q' = 3 − lo que ejecutó antes de bloquearse; si agota Q' vuelve a la cola normal. Desempate: 1° el que estaba en ejecución, 2° el que vuelve de E/S, 3° el nuevo (FIFO dentro de la misma categoría).
 
 a)
-```
-t        0         1
-         012345678901234567
-ULTB2    XXiiX.XXF
-ULTA2      XXi....XXF
-ULTB1     .......X..XXi.XXF
-ULTA1         Xi......XXF
-```
+
+| | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| ULTB2 | X | X | io | io | X |  | X | X | F |  |  |  |  |  |  |  |  |  |
+| ULTA2 |  |  | X | X | io |  |  |  |  | X | X | F |  |  |  |  |  |  |
+| ULTB1 |  |  |  |  |  |  |  |  | X |  |  | X | X | io |  | X | X | F |
+| ULTA1 |  |  |  |  |  | X | io |  |  |  |  |  |  | X | X | F |  |  |
 
 Detalle:
+
 | t | Ejecuta | Motivo | Aux | Ready |
 |---|---|---|---|---|
 | 0-2 | B (B2) | único hilo listo (B1 llega en 1) | | |
@@ -706,6 +714,7 @@ c) Con jacketing cambia en **t = 2**: B2 pide el disco con 1 ut de quantum resta
 </details>
 
 ### [Final 2025-02-11] RR Q=2 para dos procesos. B usa ULTs con biblioteca SJF **con** desalojo que maneja sus E/S. t0 llega ULTB1; t1 ULTB2 y KLTA2; t4 KLTA1 — ✍️ respuesta propia (el PDF del final no trae solución)
+
 | Proceso | Hilo | CPU | E/S | CPU |
 |---|---|---|---|---|
 | A | KLTA1 | 1 | 1 | 2 |
@@ -721,14 +730,14 @@ c) Con jacketing cambia en **t = 2**: B2 pide el disco con 1 ut de quantum resta
 <summary>Ver respuesta</summary>
 
 a)
-```
-t        0         1
-         012345678901234
-ULTB1    X....XXi.XF
-ULTB2     Xii......X..XF
-KLTA2     .XXXi..XF
-KLTA1        ...Xi..XXF
-```
+
+| | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| ULTB1 | X |  |  |  |  | X | X | io |  | X | F |  |  |  |  |
+| ULTB2 |  | X | io | io |  |  |  |  |  |  | X |  |  | X | F |
+| KLTA2 |  |  | X | X | X | io |  |  | X | F |  |  |  |  |  |
+| KLTA1 |  |  |  |  |  |  |  | X | io |  |  | X | X | F |  |
+
 - t1: llega ULTB2 (1) a la biblioteca → desaloja a B1 (restan 2). t2 B2 pide E/S → B bloqueado (y fin de quantum)
 - t4: simultaneidad: fin de quantum KLTA2, fin E/S de B, llega KLTA1 → cola [KLTA2 (en ejecución), B (vuelve de E/S), KLTA1 (nuevo)]
 - t5 B: empate B1 (2) / B2 (2) → B1, porque es el que venía ejecutando (fue desalojado en t1) y B2 vuelve de E/S. t7 B1 E/S → B bloqueado
@@ -739,6 +748,7 @@ b) Con jacketing cambia en **t = 4**: en t2 B no se bloquea (igual sale por fin 
 </details>
 
 ### [Final 2025-02-18] SO con FIFO, biblioteca de hilos SJF sin desalojo — ✍️ respuesta propia (el PDF del final no trae solución)
+
 | Proceso | Hilo | Arribo | CPU | E/S | CPU |
 |---|---|---|---|---|---|
 | 1 | KLT1 | 0 | 2 | 1 | 3 |
@@ -775,14 +785,15 @@ b) Con jacketing cambia en **t = 4**: en t2 B no se bloquea (igual sale por fin 
 <summary>Ver respuesta</summary>
 
 Supuestos: el despacho inicial de A no se cuenta; si no hay otro proceso listo la CPU queda ociosa; despachar desde ociosa también es un process switch.
-```
-t     0         1         2
-      01234567890123456789012345
-A     XX......XX......XXii...XX
-B         Xi......X
-SO      SS.SSS..SS.ESS....BSS..E
-```
-(S = SO haciendo switch / atendiendo, E = Run→Exit, B = Blocked→Ready)
+
+| | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| A | X | X |  |  |  |  |  |  | X | X |  |  |  |  |  |  | X | X | io | io |  |  |  | X | X |  |
+| B |  |  |  |  | X | io |  |  |  |  |  |  | X |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| SO |  |  | SO | SO |  | SO | SO | SO |  |  | SO | SO |  | exit | SO | SO |  |  |  |  | b→l | SO | SO |  |  | exit |
+
+(SO = el SO haciendo el process switch o atendiendo un evento; exit = Run→Exit; b→l = Blocked→Ready)
+
 | t | Qué pasa |
 |---|---|
 | 0-2 | A |
@@ -804,6 +815,7 @@ SO      SS.SSS..SS.ESS....BSS..E
 
 ### [Final 2025-07-15] Dado el Gantt, deducir el algoritmo del SO y de cada biblioteca (y si tiene jacketing). En t0 llegan KA, KB, KC en ese orden; los ULTs están listos (orden desconocido) — ✍️ respuesta propia (el PDF del final no trae solución)
 Gantt del enunciado (X = CPU, io = E/S):
+
 | | | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | KA | UA1 | | X | X | | | | | X | io | X | | | | X | F | | | | | | |
@@ -837,6 +849,7 @@ c) Biblioteca de KB: **FIFO, sin jacketing**
 </details>
 
 ### [Final 2025-09-25] Dado el Gantt, deducir el algoritmo del SO y de cada biblioteca — ✍️ respuesta propia (el PDF del final no trae solución)
+
 | Hilos | | Arribo | CPU | E/S | CPU |
 |---|---|---|---|---|---|
 | KLTA | ULT1 | 0 | 5 | 1 | 4 |
@@ -856,6 +869,7 @@ El Gantt del enunciado está como imagen en `finales/Final 2025-09-25.pdf` (en l
 <summary>Ver respuesta</summary>
 
 Traza (reconstruida del Gantt):
+
 | t | Ejecuta | Nota |
 |---|---|---|
 | 0-1 | ULT1 | |
@@ -888,6 +902,7 @@ c) KLTB: **HRRN, con jacketing**. Jacketing: t10 y t17 un ULT hace E/S y KLTB si
 </details>
 
 ### [Final 2025-12-02] 2 CPUs, SO FIFO, ULTs SJF sin desalojo. a) Gantt b) ¿Cuándo cambia con jacketing? — ✍️ respuesta propia (el PDF del final no trae solución)
+
 | KLT | Hilo | Llegada | CPU | E/S |
 |---|---|---|---|---|
 | KLTA | ULT1 | 0 | 3 | - |
@@ -901,11 +916,14 @@ c) KLTB: **HRRN, con jacketing**. Jacketing: t10 y t17 un ULT hace E/S y KLTB si
 <summary>Ver respuesta</summary>
 
 a)
-```
-t        01234567
-CPU1     22111           (ULT2 0-2, ULT1 2-5)
-CPU2       3ii44         (ULT3 2-3, E/S 3-5 → termina, ULT4 5-7)
-```
+
+| | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---|---|---|---|---|---|---|---|---|
+| KLTA - ULT1 | | | X (CPU1) | X (CPU1) | X (CPU1) | F | | |
+| KLTA - ULT2 | X (CPU1) | X (CPU1) | F | | | | | |
+| KLTB - ULT3 | | | X (CPU2) | io | io | F | | |
+| KLTB - ULT4 | | | | | | X (CPU2) | X (CPU2) | F |
+
 - Los ULTs de un mismo KLT no pueden ejecutar en paralelo: KLTA usa una CPU, KLTB la otra
 - t3: ULT3 hace E/S → KLTB bloqueado (CPU2 ociosa 3-5)
 
@@ -914,6 +932,7 @@ b) Con jacketing cambia en **t = 3**: KLTB no se bloquea y ejecuta ULT4 en 3-5 (
 </details>
 
 ### [Final 2026-02-10] RR Q=2, dos recursos de E/S (Red y Disco). a) Gantt b) Interrupciones — ✅ solución oficial
+
 | Proceso | Arribo | CPU | E/S | CPU |
 |---|---|---|---|---|
 | A | 0 | 2 | Red (5) | 3 |
@@ -924,13 +943,13 @@ b) Con jacketing cambia en **t = 3**: KLTB no se bloquea y ejecuta ULT4 en 3-5 (
 <summary>Ver respuesta</summary>
 
 a) (oficial)
-```
-t     0         1
-      0123456789012345
-A     XXrrrrrXX..X
-B       XXdddd.XX.X
-C         XX.rrrr..XXX
-```
+
+| | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| A | X | X | Red | Red | Red | Red | Red | X | X |  |  | X |  |  |  |  |
+| B |  |  | X | X | Disco | Disco | Disco | Disco |  | X | X |  | X |  |  |  |
+| C |  |  |  |  | X | X |  | Red | Red | Red | Red |  |  | X | X | X |
+
 - C pide Red en t6 pero la usa A hasta t7 → espera y la usa 7-11. CPU ociosa 6-7
 - t11: fin de quantum de B y fin de E/S de C → primero B (en ejecución) y después C (vuelve de E/S) → cola [A, B, C]
 
@@ -939,6 +958,7 @@ b) Interrupciones: t7 fin E/S (A), t8 fin E/S (B), t9 clock, t11 clock, t11 fin 
 </details>
 
 ### [Final 2026-05-19] SJF con desalojo, un recurso de E/S con dos instancias. a) Gantt b) Grafo de asignación en t4 — ✅ solución oficial
+
 | Proceso | Arribo | CPU | E/S | CPU |
 |---|---|---|---|---|
 | A | 0 | 2 | 3 | 1 |
@@ -949,12 +969,13 @@ b) Interrupciones: t7 fin E/S (A), t8 fin E/S (B), t9 clock, t11 clock, t11 fin 
 <summary>Ver respuesta</summary>
 
 a) (oficial)
-```
-t     01234567890
-A     XXiiiXF
-B       XiiiiXF
-C        X.iX.XXF
-```
+
+| | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| A | X | X | io | io | io | X | F |  |  |  |  |
+| B |  |  | X | io | io | io | io | X | F |  |  |
+| C |  |  |  | X |  | io | X |  | X | X | F |
+
 (C: CPU 3-4, espera instancia 4-5, E/S 5-6, CPU 6-7, desalojado por B 7-8, CPU 8-10 F)
 - t4: C pide E/S pero las dos instancias están ocupadas (A 2-5, B 3-7) → espera hasta 5
 - t7: vuelve B (ráfaga 1) < lo que le queda a C (2) → desaloja a C

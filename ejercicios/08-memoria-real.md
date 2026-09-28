@@ -283,6 +283,7 @@ Opciones:
 ## Prácticos
 
 ### [Final 2024-07-30] Sistema de 16 bits, sin memoria virtual, 32 KiB de RAM, segmentación paginada. 4 segmentos siempre (Code, Data, Stack, Heap), páginas de 256 B — ✍️ respuesta propia (el PDF del final no trae solución)
+
 | Code S0 | Data S1 | Stack S2 | Heap S3 |
 |---|---|---|---|
 | p0 → 3 (RX) | p0 → 6 (RW) | p0 → 9 (RW) | p0 → 10 (RW) |

@@ -78,6 +78,7 @@ pthread_detach(hilo);
 - No se tocan punteros a código/datos/heap (son del proceso)
 
 ## Comparación
+
 | | Overhead | Multiprocesamiento | Protección |
 |---|---|---|---|
 | Procesos | Alto | Sí | Alta (aislados) |

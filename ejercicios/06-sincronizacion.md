@@ -427,15 +427,15 @@ wait(S); total1++; total2++; signal(S)
 
 Supuestos: el wait se ejecuta entero (4 ut) aunque el semáforo quede negativo y el proceso se bloquea al terminarlo; como wait/signal deshabilitan interrupciones, el fin de quantum se atiende recién al terminar la syscall; las sentencias comunes sí se pueden cortar a la mitad.
 
-```
-t     0         1         2         3         4
-      0123456789012345678901234567890123456789012345678
-C1    WWWW------------112---2SSSSF
-C2     ---WWWW-----------112-----2SSSSF
-C3      ------WWWWbbbbbbbbbbbbbbb-----112---2SSSSF
-C4       ---------WWWWbbbbbbbbbbbbbbbb---112-----2SSSSF
-```
-(W = wait, 1 = total1++, 2 = total2++, S = signal, - = listo, b = bloqueado)
+| | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 | 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| C1 | wait | wait | wait | wait | – | – | – | – | – | – | – | – | – | – | – | – | t1++ | t1++ | t2++ | – | – | – | t2++ | signal | signal | signal | signal | F |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| C2 |  | – | – | – | wait | wait | wait | wait | – | – | – | – | – | – | – | – | – | – | – | t1++ | t1++ | t2++ | – | – | – | – | – | t2++ | signal | signal | signal | signal | F |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| C3 |  |  | – | – | – | – | – | – | wait | wait | wait | wait | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | – | – | – | – | – | t1++ | t1++ | t2++ | – | – | – | t2++ | signal | signal | signal | signal | F |  |  |  |  |  |
+| C4 |  |  |  | – | – | – | – | – | – | – | – | – | wait | wait | wait | wait | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | – | – | – | t1++ | t1++ | t2++ | – | – | – | – | – | t2++ | signal | signal | signal | signal | F |
+
+
+(wait / t1++ / t2++ / signal = qué sentencia ejecuta; – = listo; bloq = bloqueado en el semáforo)
 
 | t | Evento | S | Bloqueados |
 |---|---|---|---|

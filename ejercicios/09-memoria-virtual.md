@@ -179,6 +179,7 @@
 </details>
 
 ### [Final 2022-08-02] Segmentación paginada con VM, punteros de 16 bits, marcos de 4 KiB, TLB de 4 entradas, máximo 4 segmentos (solo existen 0, 1 y 2) — ✍️ respuesta propia (el PDF del final no trae solución)
+
 | Seg 0 (RW-) | Seg 1 (-X-) | Seg 2 (R--) | TLB |
 |---|---|---|---|
 | p0: F6, P1 U0 | p0: F9, P1 U0 | p0: FA, P0 U0 | B → F8 |
@@ -212,6 +213,7 @@ b) ¿Uno de los segmentos puede ser una biblioteca compartida usada con muy poca
 </details>
 
 ### [Final 2023-02-28 / 2024-02-27 / 2024-05-10] Paginación bajo demanda, DL de 16 bits, hasta 4 frames por proceso, sustitución local LRU (oficial) — ✅ solución oficial
+
 | Página | 0 | 1 | 2 | 3 | 4 | 5 | 6-9 |
 |---|---|---|---|---|---|---|---|
 | Frame | 5 | - | - | 9 | 7 | 1 | - |
@@ -250,30 +252,36 @@ b) Con FIFO cambia en la referencia a la página 1 (3500h): FIFO reemplaza por o
 (* = modificada)
 
 FIFO
+
 | Ref | 1 | 2 | 3W | 2 | 3 | 4 | 1 | 2 | 6 | 5 | 3 | 1W | 2 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | F1 | 1 | 1 | 1 | 1 | 1 | 4 | 4 | 4 | 6 | 6 | 6 | 1* | 1* |
 | F2 | | 2 | 2 | 2 | 2 | 2 | 1 | 1 | 1 | 5 | 5 | 5 | 2 |
 | F3 | | | 3* | 3* | 3* | 3* | 3* | 2 | 2 | 2 | 3 | 3 | 3 |
 | PF | PF | PF | PF | | | PF | PF | PF (escribe 3) | PF | PF | PF | PF | PF |
+
 - **11 PF** (3 sin remoción, 8 con remoción), 1 escritura
 
 LRU
+
 | Ref | 1 | 2 | 3W | 2 | 3 | 4 | 1 | 2 | 6 | 5 | 3 | 1W | 2 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | F1 | 1 | 1 | 1 | 1 | 1 | 4 | 4 | 4 | 6 | 6 | 6 | 1* | 1* |
 | F2 | | 2 | 2 | 2 | 2 | 2 | 1 | 1 | 1 | 5 | 5 | 5 | 2 |
 | F3 | | | 3* | 3* | 3* | 3* | 3* | 2 | 2 | 2 | 3 | 3 | 3 |
 | PF | PF | PF | PF | | | PF | PF | PF (escribe 3) | PF | PF | PF | PF | PF |
+
 - Queda igual que FIFO: **11 PF** (3 + 8), 1 escritura (la cadena no reusa páginas recientes)
 
 Óptimo
+
 | Ref | 1 | 2 | 3W | 2 | 3 | 4 | 1 | 2 | 6 | 5 | 3 | 1W | 2 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | F1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1* | 1* |
 | F2 | | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 |
 | F3 | | | 3* | 3* | 3* | 4 | 4 | 4 | 6 | 5 | 3 | 3 | 3 |
 | PF | PF | PF | PF | | | PF (escribe 3) | | | PF | PF | PF | | |
+
 - **7 PF** (3 sin remoción, 4 con remoción), 1 escritura
 
 b) Cada referencia sin PF = 2 accesos (tabla + dato) = 200 ns; con PF = acceso a la tabla + PF + reejecución (2 accesos)
@@ -283,6 +291,7 @@ b) Cada referencia sin PF = 2 accesos (tabla + dato) = 200 ns; con PF = acceso a
 </details>
 
 ### [Final 2023-08-01] Paginación bajo demanda, TLB de 6 entradas (= 1% de los frames) con reemplazo LRU; tablas con Clock modificado y sustitución local. PB tiene 3 páginas en memoria (último acceso: escritura en DL A55093h). Marcos de 1 MiB (oficial) — ✅ solución oficial
+
 | Pág PB | Marco | P | U | M |
 |---|---|---|---|---|
 | 0 | 10 | 0 | 0 | 0 |
@@ -334,6 +343,7 @@ b) Cada referencia sin PF = 2 accesos (tabla + dato) = 200 ns; con PF = acceso a
 </details>
 
 ### [Final 2025-02-11] DL de 32 bits, RAM de 32 MiB en 8192 frames, asignación fija de 3 frames, sustitución local. Referencias: 8100 (E), 9000 (L), 40990 (E), 3500 (L). a) LRU b) Clock modificado — ✍️ respuesta propia (el PDF del final no trae solución)
+
 | Marco | Página | U | M | Inst. carga | Inst. última ref |
 |---|---|---|---|---|---|
 | 2 | 10 | 1 | 1 | 29 | 29 |
@@ -346,15 +356,18 @@ b) Cada referencia sin PF = 2 accesos (tabla + dato) = 200 ns; con PF = acceso a
 Tamaño de frame = 32 MiB / 8192 = 4 KiB → pág = DL div 4096: 8100 → p1 (E), 9000 → p2 (L), 40990 → p10 (E), 3500 → p0 (L)
 
 a) LRU
+
 | Ref | Inicial | p1 (E) | p2 (L) | p10 (E) | p0 (L) |
 |---|---|---|---|---|---|
 | M2 | 10* (29) | 10* | 10* | 10* (32) | 10* |
 | M6 | 17 (11) | 1* (30) | 1* | 1* | 0 (33) |
 | M8 | 19 (12) | 19 | 2 (31) | 2 | 2 |
 | | | PF | PF | hit | PF (escribe p1) |
+
 - 3 PF; se escribe a disco la **página 1**
 
 b) Clock modificado (orden circular M2 → M6 → M8, puntero en M6). Notación página(U,M)
+
 | Ref | M2 | M6 | M8 | Puntero | Nota |
 |---|---|---|---|---|---|
 | Inicial | 10 (1,1) | 17 (0,0) | 19 (1,0) | M6 | |
@@ -362,11 +375,13 @@ b) Clock modificado (orden circular M2 → M6 → M8, puntero en M6). Notación 
 | p2 (L) | 10 (0,1) | 1 (0,1) | 2 (1,0) | M2 | PF: 1ra pasada nada; 2da pone U=0 en M8, M2, M6 sin encontrar (0,1) antes de dar la vuelta; 3ra pasada: M8 (0,0) víctima (p19 sin escribir) |
 | p10 (E) | 10 (1,1) | 1 (0,1) | 2 (1,0) | M2 | hit |
 | p0 (L) | 10 (0,1) | 0 (1,0) | 2 (1,0) | M8 | PF: 1ra pasada nada; 2da: M2 → U=0, M6 (0,1) víctima → **escribe p1** |
+
 - 3 PF; se escribe a disco la **página 1**
 
 </details>
 
 ### [Final 2025-02-25] Paginación bajo demanda, asignación fija de 4 frames, sustitución local, DL de 32 bits, fragmentación máxima 8191 B, proceso de 159 KB. Algoritmo Clock — ✍️ respuesta propia (el PDF del final no trae solución)
+
 | Puntero | Marco | Página | U | M | Inst. ref |
 |---|---|---|---|---|---|
 | | 1 | 14 | 1 | 1 | 28 |
@@ -395,6 +410,7 @@ Referencias: 100 (L) – 122950 (E) – 98306 (L) – 139264 (E) – 122880 (L) 
 | p15 (L) | 15 (1,1) | 12 (1,0) | 17 (1,1) | 0 (0,0) | M8 | hit | |
 | p19 (E) | 15 (1,1) | 12 (1,0) | 17 (1,1) | 19 (1,1) | M1 | PF (víctima p0) | |
 | p21 (L) | - | - | - | - | - | dirección inválida → se finaliza el proceso | |
+
 - **5 PF**, páginas escritas a disco: **14 y 19**
 
 </details>
@@ -474,12 +490,14 @@ Referencias: P1 223A0B34h (E), P1 00111001h (L), P1 01022222h (E), P2 010AA221h 
 a) Offset 20 bits (1 MiB); quedan 12 bits de página → **6 bits 1er nivel | 6 bits 2do nivel | 20 bits offset** (página = 3 dígitos hex)
 
 b)
+
 | Ref | Página | TLB | i) Lee TP | ii) Modifica TP | iii) Escribe a disco | iv) DF |
 |---|---|---|---|---|---|---|
 | P1 223A0B34h (E) | 223h | hit (11) | No | Sí (bit M, la TLB no lo guarda) | No | 0BA0B34h |
 | P1 00111001h (L) | 001h | hit (30) | No | No (salvo registrar el acceso para LRU) | No | 1E11001h |
 | P1 01022222h (E) | 010h | miss → PF | Sí (2 niveles) | Sí (223h P=0; 010h P=1 en marco 11) | **Sí**: víctima LRU = 223h, modificada | 0B22222h |
 | P2 010AA221h (E) | 010h | miss (TLB vaciada) → PF | Sí | Sí (010h P=1 en marco 50) | No (marco libre) | 32AA221h |
+
 - DF = marco × 2^20 + offset (11 = Bh, 30 = 1Eh, 50 = 32h)
 
 c) Al cambiar a P2 hay que vaciar la TLB (sus entradas no tienen PID: la página 010h existe en ambos procesos). TLB final: **010h → 50**
@@ -487,6 +505,7 @@ c) Al cambiar a P2 hay que vaciar la TLB (sus entradas no tienen PID: la página
 </details>
 
 ### [Final 2025-12-16] PC de 32 bits, páginas de 4 KiB, asignación fija de 3 frames, sustitución local. Proceso de 6 páginas con la mayor fragmentación interna posible. Clock (oficial) — ✅ solución oficial
+
 | Puntero | Página | Frame | U | M |
 |---|---|---|---|---|
 | → | 1 | 11 | 1 | 1 |
@@ -511,11 +530,13 @@ Referencias: 3000 → p0; 4321 → p1; 18123 → p4; 20495 → p5 offset 15 → 
 | 13 | 3* | →3* | →3* | 4* | |
 | PF | | PF | | PF | 2 |
 | Escritura | | Sí (p4, M=1) | | No | 1 |
+
 (* = U en 1; → = puntero)
 
 </details>
 
 ### [Final 2026-02-24] SO planifica KLTs con FIFO. Proceso 1: KLT1.1 y KLT1.2; proceso 2: 1 KLT con ULTs (biblioteca FIFO). Listos en orden de tabla. Paginación bajo demanda, 2 frames por proceso, LRU, páginas de 1 KiB, sin TLB. Leer la tabla = 1 ut de CPU, acceder a la DF = 1 ut de CPU; mover una página disco ↔ memoria = 2 ut de disco (oficial) — ✅ solución oficial
+
 | KLT 1.1 | KLT 1.2 | ULT 2.1 | ULT 2.2 |
 |---|---|---|---|
 | E(28999) → p28 | L(21999) → p21 | E(9333) → p9 | E(9222) → p9 |
@@ -541,6 +562,7 @@ Referencias: 3000 → p0; 4321 → p1; 18123 → p4; 20495 → p5 offset 15 → 
 </details>
 
 ### [Final 2026-05-19] Memoria física de 256 KiB, carga de segmentos bajo demanda, ubicación Worst Fit. Un único proceso (oficial) — ✅ solución oficial
+
 | Segmento | Base | Tamaño | Presencia | Modificado |
 |---|---|---|---|---|
 | 0 | 140 KiB | 32 KiB | 1 | 0 |

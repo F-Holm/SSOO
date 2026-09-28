@@ -44,6 +44,7 @@
   - TT (transferencia): el único "constante"
 
 ## Algoritmos de planificación de disco (optimizan el tiempo de búsqueda)
+
 | Algoritmo | Cómo | Dirección | Topes | Colas | Starvation |
 |---|---|---|---|---|---|
 | FCFS/FIFO | Orden de llegada | No | - | 1 | No |
@@ -54,6 +55,7 @@
 | C-LOOK | Como C-SCAN pero hasta el último pedido y salta al primero | Siempre la misma | No | 1 | Sí |
 | FSCAN | 2 colas: activa (se atiende con SCAN) y pasiva (llegan los nuevos). Al vaciarse la activa, se intercambian | Sí | Sí | 2 | No |
 | N-step-SCAN | Colas de hasta N pedidos, cada una con SCAN | Sí | Sí | x colas de N | No |
+
 - SSTF mejora el tiempo de espera promedio (menor búsqueda), baja equidad
 - SCAN tiene inanición cuando siguen llegando pedidos de la pista actual
 - FSCAN y N-step-SCAN privilegian el orden de llegada, sin inanición (más tiempo de búsqueda, más equidad)

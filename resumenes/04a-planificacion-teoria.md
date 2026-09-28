@@ -83,6 +83,7 @@
 - SJF, SRT, prioridades, colas multinivel, feedback (según implementación)
 
 ### Resumen
+
 | Algoritmo | Desalojo | Starvation | Overhead | Otros |
 |---|---|---|---|---|
 | FIFO | No | No* | Bajo | Monopoliza |

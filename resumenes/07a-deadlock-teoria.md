@@ -35,6 +35,7 @@
 - Los que no pueden acceder a un recurso de 1 instancia no quedan necesariamente en deadlock: falta la espera circular
 
 ## Estrategias
+
 | | Garantiza no deadlock | Overhead | Flexibilidad | Cuándo |
 |---|---|---|---|---|
 | Prevención | Sí | Bajo | Baja (restrictiva, subutiliza recursos) | Sistemas críticos, HW limitado, minimizar overhead |

@@ -368,6 +368,7 @@
 ## Prácticos
 
 ### [Final 2022-12-06] a) Disponibles (1,0,9,4): ¿estado seguro? b) Con FCFS (orden = nro de proceso), ¿se satisfacen las 3 primeras peticiones (cada uno pide todo lo pendiente)? — ✍️ respuesta propia (el PDF del final no trae solución)
+
 | | MA R1 | R2 | R3 | R4 | | MM R1 | R2 | R3 | R4 |
 |---|---|---|---|---|---|---|---|---|---|
 | P1 | 0 | 3 | 1 | 3 | | 2 | 3 | 2 | 5 |
@@ -382,6 +383,7 @@
 Pendientes = MM − MA: P1 (2,0,1,2), P2 (0,1,3,1), P3 (0,0,3,5), P4 (1,0,3,2), P5 (2,1,0,2)
 
 a)
+
 | Paso | Termina | Disponibles |
 |---|---|---|
 | inicio | | (1,0,9,4) |
@@ -390,6 +392,7 @@ a)
 | 3 | P2 | + (1,1,3,2) = (4,4,15,9) |
 | 4 | P3 | + (0,2,1,0) = (4,6,16,9) |
 | 5 | P5 | + (1,3,5,2) = (5,9,21,11) = totales ✓ |
+
 - Secuencia segura P4, P1, P2, P3, P5 → **estado seguro**
 
 b) Con disponibles (1,0,9,4):
@@ -401,6 +404,7 @@ b) Con disponibles (1,0,9,4):
 </details>
 
 ### [Final 2023-08-01] Detección y recuperación. Totales [R1..R4] = [4,5,7,5]. Se asume que más recursos asignados = más cerca de terminar — ✅ solución oficial
+
 | | Pet R1 | R2 | R3 | R4 | | Asig R1 | R2 | R3 | R4 |
 |---|---|---|---|---|---|---|---|---|---|
 | P1 | 1 | 0 | 2 | 2 | | 0 | 0 | 0 | 0 |

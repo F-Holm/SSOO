@@ -108,6 +108,7 @@
 - Más overhead. Puede ser multinivel (se combina con paginación multinivel en sistemas modernos)
 
 ## Cuadro comparativo
+
 | Técnica | Descripción | Ventajas | Desventajas |
 |---|---|---|---|
 | Particiones fijas | Particiones de tamaño fijo, el proceso ≤ partición | Simple, poco overhead | Frag. interna, limita multiprogramación |
