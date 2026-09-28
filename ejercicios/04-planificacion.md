@@ -469,7 +469,7 @@ Opciones:
 | P2 | 1 | 8 | 1 | 5 | - | - |
 | P3 | 2 | 8 | - | - | - | - |
 
-> ⚠️ **Aclaración de la consigna:** no dice si hay uno o varios dispositivos de E/S. Se asume que las E/S se hacen en paralelo (no hay cola de E/S).
+> ⚠️ **Aclaración de la consigna:** no dice cuántos dispositivos de E/S hay: se asume uno solo (cola FIFO). Con estos datos, en RR y en la propuesta del punto c) las E/S nunca se superponen, así que no hay esperas por el dispositivo.
 
 `NTT = (Σ tiempos en Ready + Σ ráfagas CPU) / Σ ráfagas CPU`
 
@@ -481,7 +481,7 @@ Opciones:
 <details>
 <summary>Ver respuesta</summary>
 
-a) RR q=3 (E/S en paralelo)
+a) RR q=3 (1 CPU, 1 dispositivo de E/S)
 ```
 t      0         1         2
        01234567890123456789012345
@@ -507,7 +507,7 @@ P3       ---XXX-----XXX---XXF
 ```
 - P1: ready 7-8 + 14-16 = 3 → (3+5)/5 = **1,6** (mejora)
 - P2: 1 + 5 + 4 + 1 = 11 → **1,85**; P3: 3 + 5 + 3 = 11 → 19/8 = **2,375**
-- Ojo: con VRR "puro" (cola aux con q' = 3 − 2 = 1) P1 ejecuta 1 sola unidad al volver de E/S, se corta y vuelve al final de la cola → NTT = (8+5)/5 = 2,6 (no mejora con estos datos)
+- Ojo: con VRR "puro" (cola aux con q' = 3 − 2 = 1) P1 ejecuta 1 sola unidad al volver de E/S, se corta y vuelve al final de la cola. Además P2 pide la E/S en t18 con el dispositivo ocupado por P1 hasta t20, así que espera. Resultado: NTT de P1 = (7 + 5) / 5 = 2,4, igual que con RR (no mejora con estos datos)
 
 </details>
 

@@ -18,7 +18,8 @@
 - SJF con empate de ráfaga entre uno que vuelve de E/S y uno que nunca ejecutó → el que vuelve de E/S
 - SRT con empate: no desaloja
 - RR: el quantum no se acumula. Si queda solo un proceso listo al terminar su quantum, sigue ejecutando
-- Las E/S se atienden FIFO. Si el dispositivo "no permite accesos en paralelo" hay que hacer cola de E/S; si no dice nada, suelen asumirse en paralelo
+- **Si el enunciado no aclara: 1 sola CPU y 1 solo dispositivo de E/S** → las E/S no se superponen; si el dispositivo está ocupado, el pedido espera en la cola de E/S (FIFO)
+- Solo hay varias CPUs, varios dispositivos o varias instancias si el enunciado lo dice
 - Si un recurso de E/S tiene N instancias, hasta N procesos a la vez
 - En los ejercicios se asume **sin jacketing** salvo que diga lo contrario
 - Si dicen "cada involucramiento del SO / process switch insume X ut", dibujar una fila del SO
