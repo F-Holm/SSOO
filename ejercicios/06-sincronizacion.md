@@ -557,22 +557,40 @@ Supuestos: el wait se ejecuta entero (4 ut) aunque el semáforo quede negativo y
 <details>
 <summary>Ver respuesta</summary>
 
-**Semáforos:** `palillos = 1 (mutex)` · `tun = 2 (tuns habilitados en la vuelta)` · `tunListo = 0` · `will = 0` · `we2 = 0` · `rock = 0`
+**Semáforos:** `palillos = 1` (mutex) · `tun = 2` (tuns habilitados en la vuelta) · `we = 0` (avisos para decir "we") · `weWill = 2` (cantidad de "we will" que faltan en la vuelta) · `will = 0` · `finWill = 0` ("will" dichos)
 
 | Baterista y Percusionista (igual) | Vocalista 1 | Vocalista 2 | Vocalista 3 |
 |---|---|---|---|
 | `while(1) {` | `while(1) {` | `while(1) {` | `while(1) {` |
-| &emsp;`wait(tun);` | &emsp;`wait(tunListo);` | &emsp;`wait(will);` | &emsp;`wait(rock);` |
-| &emsp;`wait(palillos);` | &emsp;`wait(tunListo);` | &emsp;`print("will");` | &emsp;`print("rock you!");` |
-| &emsp;`tomar_palillo();` | &emsp;`print("we");` | &emsp;`signal(we2);` | &emsp;`signal(tun);` |
-| &emsp;`signal(palillos);` | &emsp;`signal(will);` | &emsp;`wait(will);` | &emsp;`signal(tun);` |
-| &emsp;`print("tun");` | &emsp;`wait(we2);` | &emsp;`print("will");` | `}` |
-| &emsp;`signal(tunListo);` | &emsp;`print("we");` | &emsp;`signal(rock);` |  |
-| `}` | &emsp;`signal(will);` | `}` |  |
-|  | `}` |  |  |
+| &emsp;`wait(tun);` | &emsp;`wait(weWill);` | &emsp;`wait(will);` | &emsp;`wait(finWill);` |
+| &emsp;`wait(palillos);` | &emsp;`wait(we);` | &emsp;`print("will");` | &emsp;`wait(finWill);` |
+| &emsp;`tomar_palillo();` | &emsp;`wait(we);` | &emsp;`signal(we);` | &emsp;`wait(we);` |
+| &emsp;`signal(palillos);` | &emsp;`print("we");` | &emsp;`signal(we);` | &emsp;`wait(we);` |
+| &emsp;`print("tun");` | &emsp;`signal(will);` | &emsp;`signal(finWill);` | &emsp;`print("rock you!");` |
+| &emsp;`signal(we);` | `}` | `}` | &emsp;`signal(weWill);` |
+| `}` |  |  | &emsp;`signal(weWill);` |
+|  |  |  | &emsp;`signal(tun);` |
+|  |  |  | &emsp;`signal(tun);` |
+|  |  |  | `}` |
 
-- Traza: tun, tun → we → will → we → will → rock you! → se habilitan 2 tuns de nuevo
-- Los vocalistas 1 y 2 aparecen dos veces por vuelta → se "desenrolla" su loop
+Cada proceso imprime una sola vez por iteración (no se repiten prints):
+- Cada "we" necesita **dos** avisos de `we`: los dos primeros los dan los dos "tun"; después de cada "will", el Vocalista 2 da otros dos
+- `weWill` limita a 2 los "we" de la vuelta: después del segundo "we" el Vocalista 1 queda bloqueado aunque haya avisos de `we`
+- El Vocalista 3 espera **dos** `finWill` (los dos "will") y consume los dos avisos de `we` que sobraron del segundo "will", así la vuelta siguiente arranca en `we = 0`. Después repone `weWill = 2` y habilita dos "tun"
+
+Traza de una vuelta:
+
+| Imprime | we | weWill | finWill | Nota |
+|---|---|---|---|---|
+| tun | 1 | 2 | 0 | |
+| tun | 2 | 2 | 0 | |
+| we | 0 | 1 | 0 | V1 consume los 2 avisos de los tun |
+| will | 2 | 1 | 1 | |
+| we | 0 | 0 | 1 | V1 consume los 2 avisos del will |
+| will | 2 | 0 | 2 | V1 no puede entrar (weWill = 0) |
+| rock you! | 0 | 2 | 0 | V3 consume los 2 avisos sobrantes, repone weWill y habilita 2 tun |
+
+- Otra opción válida es "desenrollar" el loop de los vocalistas 1 y 2 (cada uno imprime dos veces por vuelta), pero repite prints
 
 </details>
 
