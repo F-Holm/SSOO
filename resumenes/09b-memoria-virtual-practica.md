@@ -32,30 +32,32 @@
 | Ref | 2 | 3' | 2 | 1 | 5' | 2 | 4' | 5 | 3 | 2' | 5 | 2 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Fr1 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 3 | 3 | 3 | 3 |
-| Fr2 | - | 3 | 3 | 3 | 5 | 5 | 5 | 5 | 5 | 5 | 5 | 5 |
-| Fr3 | - | - | - | 1 | 1 | 1 | 4 | 4 | 4 | 2 | 2 | 2 |
+| Fr2 | - | 3 M | 3 M | 3 M | 5 M | 5 M | 5 M | 5 M | 5 M | 5 M | 5 M | 5 M |
+| Fr3 | - | - | - | 1 | 1 | 1 | 4 M | 4 M | 4 M | 2 M | 2 M | 2 M |
 | PF | PF | PF | - | PF | PF | - | PF | - | PF | PF | - | - |
 | Acc disco | 1 | 1 | 0 | 1 | 2 | 0 | 1 | 0 | 1 | 2 | 0 | 0 |
 
-### CLOCK (P U) → 8 PF, 11 accesos
+### CLOCK → 8 PF, 11 accesos
 
 | Ref | 2 | 3' | 2 | 1 | 5' | 2 | 4' | 5 | 3 | 2' | 5 | 2 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Fr1 | **2 1** | **2 1** | **2 1** | **2 1** | 5 1 | 5 1 | **5 1** | **5 1** | 3 1 | 3 1 | **3 1** | 3 1 |
-| Fr2 | - | 3 1 | 3 1 | 3 1 | **3 0** | 2 1 | 2 1 | 2 1 | **2 0** | **2 1** | 2 0 | 2 1 |
-| Fr3 | - | - | - | 1 1 | 1 0 | **1 0** | 4 1 | 4 1 | 4 0 | 4 0 | 5 1 | 5 1 |
+| Fr1 | → 2 U | → 2 U | → 2 U | → 2 U | 5 U M | 5 U M | → 5 U M | → 5 U M | 3 U | 3 U | → 3 U | → 3 U |
+| Fr2 | - | 3 U M | 3 U M | 3 U M | → 3 M | 2 U | 2 U | 2 U | → 2 | → 2 U M | 2 M | 2 U M |
+| Fr3 | - | - | - | 1 U | 1 | → 1 | 4 U M | 4 U M | 4 M | 4 M | 5 U | 5 U |
+| Puntero | Fr1 | Fr1 | Fr1 | Fr1 | Fr2 | Fr3 | Fr1 | Fr1 | Fr2 | Fr2 | Fr1 | Fr1 |
 | PF | PF | PF | - | PF | PF | PF | PF | - | PF | - | PF | - |
 | Acc disco | 1 | 1 | 0 | 1 | 1 | 2 | 1 | 0 | 2 | 0 | 2 | 0 |
 
-(en negrita: donde queda el puntero)
+(→ y fila Puntero: frame al que apunta el puntero después de cada referencia; mientras se llenan los frames libres queda en Fr1. U = bit de uso en 1, M = bit de modificado en 1; si la letra no está, el bit está en 0)
 
-### CLOCK MODIFICADO (P U M) → 9 PF, 12 accesos
+### CLOCK MODIFICADO → 9 PF, 12 accesos
 
 | Ref | 2 | 3' | 2 | 1 | 5' | 2 | 4' | 5 | 3 | 2' | 5 | 2 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Fr1 | **210** | **210** | **210** | **210** | 511 | **511** | 501 | 511 | **501** | 211 | 211 | 211 |
-| Fr2 | - | 311 | 311 | 311 | **301** | 301 | 411 | 411 | 401 | **401** | 510 | 510 |
-| Fr3 | - | - | - | 110 | 100 | 210 | **210** | **210** | 310 | 310 | **310** | **310** |
+| Fr1 | → 2 U | → 2 U | → 2 U | → 2 U | 5 U M | → 5 U M | 5 M | 5 U M | → 5 M | 2 U M | 2 U M | 2 U M |
+| Fr2 | - | 3 U M | 3 U M | 3 U M | → 3 M | 3 M | 4 U M | 4 U M | 4 M | → 4 M | 5 U | 5 U |
+| Fr3 | - | - | - | 1 U | 1 | 2 U | → 2 U | → 2 U | 3 U | 3 U | → 3 U | → 3 U |
+| Puntero | Fr1 | Fr1 | Fr1 | Fr1 | Fr2 | Fr1 | Fr3 | Fr3 | Fr1 | Fr2 | Fr3 | Fr3 |
 | PF | PF | PF | - | PF | PF | PF | PF | - | PF | PF | PF | - |
 | Acc disco | 1 | 1 | 0 | 1 | 1 | 1 | 2 | 0 | 1 | 2 | 2 | 0 |
 

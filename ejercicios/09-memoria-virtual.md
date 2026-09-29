@@ -183,30 +183,32 @@ Convención de accesos a disco: 1 por cargar la página; +1 si la víctima estab
 | Ref | 2 | 3' | 2 | 1 | 5' | 2 | 4' | 5 | 3 | 2' | 5 | 2 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Fr1 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 3 | 3 | 3 | 3 |
-| Fr2 | - | 3 | 3 | 3 | 5 | 5 | 5 | 5 | 5 | 5 | 5 | 5 |
-| Fr3 | - | - | - | 1 | 1 | 1 | 4 | 4 | 4 | 2 | 2 | 2 |
+| Fr2 | - | 3 M | 3 M | 3 M | 5 M | 5 M | 5 M | 5 M | 5 M | 5 M | 5 M | 5 M |
+| Fr3 | - | - | - | 1 | 1 | 1 | 4 M | 4 M | 4 M | 2 M | 2 M | 2 M |
 | PF | PF | PF | - | PF | PF | - | PF | - | PF | PF | - | - |
 | Acc disco | 1 | 1 | 0 | 1 | 2 | 0 | 1 | 0 | 1 | 2 | 0 | 0 |
 
-**CLOCK (P U) → 8 PF, 11 accesos**
+**CLOCK → 8 PF, 11 accesos**
 
 | Ref | 2 | 3' | 2 | 1 | 5' | 2 | 4' | 5 | 3 | 2' | 5 | 2 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Fr1 | **2 1** | **2 1** | **2 1** | **2 1** | 5 1 | 5 1 | **5 1** | **5 1** | 3 1 | 3 1 | **3 1** | 3 1 |
-| Fr2 | - | 3 1 | 3 1 | 3 1 | **3 0** | 2 1 | 2 1 | 2 1 | **2 0** | **2 1** | 2 0 | 2 1 |
-| Fr3 | - | - | - | 1 1 | 1 0 | **1 0** | 4 1 | 4 1 | 4 0 | 4 0 | 5 1 | 5 1 |
+| Fr1 | → 2 U | → 2 U | → 2 U | → 2 U | 5 U M | 5 U M | → 5 U M | → 5 U M | 3 U | 3 U | → 3 U | → 3 U |
+| Fr2 | - | 3 U M | 3 U M | 3 U M | → 3 M | 2 U | 2 U | 2 U | → 2 | → 2 U M | 2 M | 2 U M |
+| Fr3 | - | - | - | 1 U | 1 | → 1 | 4 U M | 4 U M | 4 M | 4 M | 5 U | 5 U |
+| Puntero | Fr1 | Fr1 | Fr1 | Fr1 | Fr2 | Fr3 | Fr1 | Fr1 | Fr2 | Fr2 | Fr1 | Fr1 |
 | PF | PF | PF | - | PF | PF | PF | PF | - | PF | - | PF | - |
 | Acc disco | 1 | 1 | 0 | 1 | 1 | 2 | 1 | 0 | 2 | 0 | 2 | 0 |
 
-(en negrita: donde queda el puntero)
+(→ y fila Puntero: frame al que apunta el puntero después de cada referencia; mientras se llenan los frames libres queda en Fr1. U = bit de uso en 1, M = bit de modificado en 1; si la letra no está, el bit está en 0)
 
-**CLOCK MODIFICADO (P U M) → 9 PF, 12 accesos**
+**CLOCK MODIFICADO → 9 PF, 12 accesos**
 
 | Ref | 2 | 3' | 2 | 1 | 5' | 2 | 4' | 5 | 3 | 2' | 5 | 2 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Fr1 | **210** | **210** | **210** | **210** | 511 | **511** | 501 | 511 | **501** | 211 | 211 | 211 |
-| Fr2 | - | 311 | 311 | 311 | **301** | 301 | 411 | 411 | 401 | **401** | 510 | 510 |
-| Fr3 | - | - | - | 110 | 100 | 210 | **210** | **210** | 310 | 310 | **310** | **310** |
+| Fr1 | → 2 U | → 2 U | → 2 U | → 2 U | 5 U M | → 5 U M | 5 M | 5 U M | → 5 M | 2 U M | 2 U M | 2 U M |
+| Fr2 | - | 3 U M | 3 U M | 3 U M | → 3 M | 3 M | 4 U M | 4 U M | 4 M | → 4 M | 5 U | 5 U |
+| Fr3 | - | - | - | 1 U | 1 | 2 U | → 2 U | → 2 U | 3 U | 3 U | → 3 U | → 3 U |
+| Puntero | Fr1 | Fr1 | Fr1 | Fr1 | Fr2 | Fr1 | Fr3 | Fr3 | Fr1 | Fr2 | Fr3 | Fr3 |
 | PF | PF | PF | - | PF | PF | PF | PF | - | PF | PF | PF | - |
 | Acc disco | 1 | 1 | 0 | 1 | 1 | 1 | 2 | 0 | 1 | 2 | 2 | 0 |
 
@@ -283,15 +285,15 @@ b) Con FIFO cambia en la referencia a la página 1 (3500h): FIFO reemplaza por o
 <details>
 <summary>Ver respuesta</summary>
 
-(* = modificada)
+(M = página modificada: el frame tiene el bit M en 1)
 
 FIFO
 
 | Ref | 1 | 2 | 3W | 2 | 3 | 4 | 1 | 2 | 6 | 5 | 3 | 1W | 2 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| F1 | 1 | 1 | 1 | 1 | 1 | 4 | 4 | 4 | 6 | 6 | 6 | 1* | 1* |
+| F1 | 1 | 1 | 1 | 1 | 1 | 4 | 4 | 4 | 6 | 6 | 6 | 1 M | 1 M |
 | F2 | | 2 | 2 | 2 | 2 | 2 | 1 | 1 | 1 | 5 | 5 | 5 | 2 |
-| F3 | | | 3* | 3* | 3* | 3* | 3* | 2 | 2 | 2 | 3 | 3 | 3 |
+| F3 | | | 3 M | 3 M | 3 M | 3 M | 3 M | 2 | 2 | 2 | 3 | 3 | 3 |
 | PF | PF | PF | PF | | | PF | PF | PF (escribe 3) | PF | PF | PF | PF | PF |
 
 - **11 PF** (3 sin remoción, 8 con remoción), 1 escritura
@@ -300,9 +302,9 @@ LRU
 
 | Ref | 1 | 2 | 3W | 2 | 3 | 4 | 1 | 2 | 6 | 5 | 3 | 1W | 2 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| F1 | 1 | 1 | 1 | 1 | 1 | 4 | 4 | 4 | 6 | 6 | 6 | 1* | 1* |
+| F1 | 1 | 1 | 1 | 1 | 1 | 4 | 4 | 4 | 6 | 6 | 6 | 1 M | 1 M |
 | F2 | | 2 | 2 | 2 | 2 | 2 | 1 | 1 | 1 | 5 | 5 | 5 | 2 |
-| F3 | | | 3* | 3* | 3* | 3* | 3* | 2 | 2 | 2 | 3 | 3 | 3 |
+| F3 | | | 3 M | 3 M | 3 M | 3 M | 3 M | 2 | 2 | 2 | 3 | 3 | 3 |
 | PF | PF | PF | PF | | | PF | PF | PF (escribe 3) | PF | PF | PF | PF | PF |
 
 - Queda igual que FIFO: **11 PF** (3 + 8), 1 escritura (la cadena no reusa páginas recientes)
@@ -311,9 +313,9 @@ LRU
 
 | Ref | 1 | 2 | 3W | 2 | 3 | 4 | 1 | 2 | 6 | 5 | 3 | 1W | 2 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| F1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1* | 1* |
+| F1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 M | 1 M |
 | F2 | | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 |
-| F3 | | | 3* | 3* | 3* | 4 | 4 | 4 | 6 | 5 | 3 | 3 | 3 |
+| F3 | | | 3 M | 3 M | 3 M | 4 | 4 | 4 | 6 | 5 | 3 | 3 | 3 |
 | PF | PF | PF | PF | | | PF (escribe 3) | | | PF | PF | PF | | |
 
 - **7 PF** (3 sin remoción, 4 con remoción), 1 escritura
@@ -393,22 +395,24 @@ a) LRU
 
 | Ref | Inicial | p1 (E) | p2 (L) | p10 (E) | p0 (L) |
 |---|---|---|---|---|---|
-| M2 | 10* (29) | 10* | 10* | 10* (32) | 10* |
-| M6 | 17 (11) | 1* (30) | 1* | 1* | 0 (33) |
+| M2 | 10 M (29) | 10 M | 10 M | 10 M (32) | 10 M |
+| M6 | 17 (11) | 1 M (30) | 1 M | 1 M | 0 (33) |
 | M8 | 19 (12) | 19 | 2 (31) | 2 | 2 |
 | | | PF | PF | hit | PF (escribe p1) |
 
+(M = página modificada; entre paréntesis, el instante de última referencia)
+
 - 3 PF; se escribe a disco la **página 1**
 
-b) Clock modificado (orden circular M2 → M6 → M8, puntero en M6). Notación página(U,M)
+b) Clock modificado (orden circular M2 → M6 → M8, puntero en M6). Notación: página + U si el bit de uso está en 1 + M si el de modificado está en 1 (en las notas, (U,M) es el par de bits que busca el algoritmo)
 
 | Ref | M2 | M6 | M8 | Puntero | Nota |
 |---|---|---|---|---|---|
-| Inicial | 10 (1,1) | 17 (0,0) | 19 (1,0) | M6 | |
-| p1 (E) | 10 (1,1) | 1 (1,1) | 19 (1,0) | M8 | PF: 1ra pasada encuentra (0,0) en M6 |
-| p2 (L) | 10 (0,1) | 1 (0,1) | 2 (1,0) | M2 | PF: 1ra pasada nada; 2da pone U=0 en M8, M2, M6 sin encontrar (0,1) antes de dar la vuelta; 3ra pasada: M8 (0,0) víctima (p19 sin escribir) |
-| p10 (E) | 10 (1,1) | 1 (0,1) | 2 (1,0) | M2 | hit |
-| p0 (L) | 10 (0,1) | 0 (1,0) | 2 (1,0) | M8 | PF: 1ra pasada nada; 2da: M2 → U=0, M6 (0,1) víctima → **escribe p1** |
+| Inicial | 10 U M | 17 | 19 U | M6 | |
+| p1 (E) | 10 U M | 1 U M | 19 U | M8 | PF: 1ra pasada encuentra (0,0) en M6 |
+| p2 (L) | 10 M | 1 M | 2 U | M2 | PF: 1ra pasada nada; 2da pone U=0 en M8, M2, M6 sin encontrar (0,1) antes de dar la vuelta; 3ra pasada: M8 (0,0) víctima (p19 sin escribir) |
+| p10 (E) | 10 U M | 1 M | 2 U | M2 | hit |
+| p0 (L) | 10 M | 0 U | 2 U | M8 | PF: 1ra pasada nada; 2da: M2 → U=0, M6 (0,1) víctima → **escribe p1** |
 
 - 3 PF; se escribe a disco la **página 1**
 
@@ -436,13 +440,13 @@ Referencias: 100 (L) – 122950 (E) – 98306 (L) – 139264 (E) – 122880 (L) 
 
 | Ref | M1 | M3 | M5 | M8 | Puntero | PF | Escritura |
 |---|---|---|---|---|---|---|---|
-| Inicial | 14 (1,1) | 17 (1,0) | 19 (1,1) | - | M8 | | |
-| p0 (L) | 14 (1,1) | 17 (1,0) | 19 (1,1) | 0 (1,0) | M1 | PF (marco libre) | |
-| p15 (E) | 15 (1,1) | 17 (0,0) | 19 (0,1) | 0 (0,0) | M3 | PF (da la vuelta: U=0 en todos, víctima p14) | p14 |
-| p12 (L) | 15 (1,1) | 12 (1,0) | 19 (0,1) | 0 (0,0) | M5 | PF (víctima p17) | |
-| p17 (E) | 15 (1,1) | 12 (1,0) | 17 (1,1) | 0 (0,0) | M8 | PF (víctima p19) | p19 |
-| p15 (L) | 15 (1,1) | 12 (1,0) | 17 (1,1) | 0 (0,0) | M8 | hit | |
-| p19 (E) | 15 (1,1) | 12 (1,0) | 17 (1,1) | 19 (1,1) | M1 | PF (víctima p0) | |
+| Inicial | 14 U M | 17 U | 19 U M | - | M8 | | |
+| p0 (L) | 14 U M | 17 U | 19 U M | 0 U | M1 | PF (marco libre) | |
+| p15 (E) | 15 U M | 17 | 19 M | 0 | M3 | PF (da la vuelta: U=0 en todos, víctima p14) | p14 |
+| p12 (L) | 15 U M | 12 U | 19 M | 0 | M5 | PF (víctima p17) | |
+| p17 (E) | 15 U M | 12 U | 17 U M | 0 | M8 | PF (víctima p19) | p19 |
+| p15 (L) | 15 U M | 12 U | 17 U M | 0 | M8 | hit | |
+| p19 (E) | 15 U M | 12 U | 17 U M | 19 U M | M1 | PF (víctima p0) | |
 | p21 (L) | - | - | - | - | - | dirección inválida → se finaliza el proceso | |
 
 - **5 PF**, páginas escritas a disco: **14 y 19**
@@ -559,13 +563,14 @@ Referencias: 3000 → p0; 4321 → p1; 18123 → p4; 20495 → p5 offset 15 → 
 
 | Frame | Inicial | p0 | p1 | p4 | p5 |
 |---|---|---|---|---|---|
-| 11 | →1* | 1 | 1* | →1 | dirección inválida |
-| 12 | 4 | 0* | 0* | 0 | |
-| 13 | 3* | →3* | →3* | 4* | |
+| 11 | → 1 U M | 1 M | 1 U M | → 1 M | dirección inválida |
+| 12 | 4 M | 0 U | 0 U | 0 | |
+| 13 | 3 U | → 3 U | → 3 U | 4 U | |
+| Puntero | 11 | 13 | 13 | 11 | - |
 | PF | | PF | | PF | 2 |
 | Escritura | | Sí (p4, M=1) | | No | 1 |
 
-(* = U en 1; → = puntero)
+(U = bit de uso en 1; M = bit de modificado en 1; → = puntero. Las referencias no indican lectura/escritura, así que las páginas que se cargan quedan con M = 0)
 
 </details>
 
