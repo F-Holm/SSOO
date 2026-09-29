@@ -90,12 +90,19 @@
 
 </details>
 
-### [Cuestionario de repaso 03-28 (PDF)] ¿Cuáles son las ventajas de los microkernels?
+### [Cuestionario de repaso 03-28 (PDF)] ¿Cuáles son las ventajas de los microkernels? (varias opciones)
+Opciones:
+
+- robustez, fiabilidad, tolerancia a fallas (menos corriendo en kernel mode)
+- eficiencia en la comunicación entre módulos
+- facilidad de intercambiar un módulo con otro
+- es el formato de kernel más adoptado en los SOs actuales
 
 <details>
 <summary>Ver respuesta</summary>
 
-- Ver [01-arquitectura-interrupciones.md](01-arquitectura-interrupciones.md) (pregunta 6 del cuestionario de repaso)
+- **Sí**: robustez, fiabilidad, tolerancia a fallas; facilidad de intercambiar un módulo con otro (ej: el file system)
+- **No**: eficiencia en la comunicación entre módulos (necesitan IPC → más cambios de modo y de contexto); no es el más adoptado (lo es el monolítico, justamente por la velocidad)
 
 </details>
 

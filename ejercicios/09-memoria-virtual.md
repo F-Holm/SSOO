@@ -171,10 +171,44 @@
 
 ### [Clase] Cadena 2 3' 2 1 5' 2 4' 5 3 2' 5 2 con 3 frames (LRU, Clock, Clock modificado)
 
+**Consigna:** con 3 frames, simular la cadena de referencias con LRU, Clock y Clock modificado (' = escritura). Indicar el estado de los frames, los page faults y los accesos a disco.
+
 <details>
 <summary>Ver respuesta</summary>
 
-- Ver [resumen 09b](../resumenes/09b-memoria-virtual-practica.md): LRU 7 PF / 9 accesos, Clock 8 PF / 11 accesos, Clock modificado 9 PF / 12 accesos
+Convención de accesos a disco: 1 por cargar la página; +1 si la víctima estaba modificada (hay que escribirla).
+
+**LRU → 7 PF, 9 accesos a disco**
+
+| Ref | 2 | 3' | 2 | 1 | 5' | 2 | 4' | 5 | 3 | 2' | 5 | 2 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Fr1 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 3 | 3 | 3 | 3 |
+| Fr2 | - | 3 | 3 | 3 | 5 | 5 | 5 | 5 | 5 | 5 | 5 | 5 |
+| Fr3 | - | - | - | 1 | 1 | 1 | 4 | 4 | 4 | 2 | 2 | 2 |
+| PF | PF | PF | - | PF | PF | - | PF | - | PF | PF | - | - |
+| Acc disco | 1 | 1 | 0 | 1 | 2 | 0 | 1 | 0 | 1 | 2 | 0 | 0 |
+
+**CLOCK (P U) → 8 PF, 11 accesos**
+
+| Ref | 2 | 3' | 2 | 1 | 5' | 2 | 4' | 5 | 3 | 2' | 5 | 2 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Fr1 | **2 1** | **2 1** | **2 1** | **2 1** | 5 1 | 5 1 | **5 1** | **5 1** | 3 1 | 3 1 | **3 1** | 3 1 |
+| Fr2 | - | 3 1 | 3 1 | 3 1 | **3 0** | 2 1 | 2 1 | 2 1 | **2 0** | **2 1** | 2 0 | 2 1 |
+| Fr3 | - | - | - | 1 1 | 1 0 | **1 0** | 4 1 | 4 1 | 4 0 | 4 0 | 5 1 | 5 1 |
+| PF | PF | PF | - | PF | PF | PF | PF | - | PF | - | PF | - |
+| Acc disco | 1 | 1 | 0 | 1 | 1 | 2 | 1 | 0 | 2 | 0 | 2 | 0 |
+
+(en negrita: donde queda el puntero)
+
+**CLOCK MODIFICADO (P U M) → 9 PF, 12 accesos**
+
+| Ref | 2 | 3' | 2 | 1 | 5' | 2 | 4' | 5 | 3 | 2' | 5 | 2 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Fr1 | **210** | **210** | **210** | **210** | 511 | **511** | 501 | 511 | **501** | 211 | 211 | 211 |
+| Fr2 | - | 311 | 311 | 311 | **301** | 301 | 411 | 411 | 401 | **401** | 510 | 510 |
+| Fr3 | - | - | - | 110 | 100 | 210 | **210** | **210** | 310 | 310 | **310** | **310** |
+| PF | PF | PF | - | PF | PF | PF | PF | - | PF | PF | PF | - |
+| Acc disco | 1 | 1 | 0 | 1 | 1 | 1 | 2 | 0 | 1 | 2 | 2 | 0 |
 
 </details>
 

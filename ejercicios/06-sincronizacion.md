@@ -280,10 +280,41 @@
 
 ### [Clase 04-18] BACA BACA
 
+**Consigna:** sincronizar con semáforos tres procesos A, B y C (cada uno imprime su letra en un `while(1)`) para que se imprima permanentemente B A C A B A C A …
+
 <details>
 <summary>Ver respuesta</summary>
 
-- Ver [resumen 06b](../resumenes/06b-sincronizacion-practica.md) (dos soluciones corregidas)
+**Solución 1**
+
+> ⚠️ **Error en el apunte (04-18):** `mutexBoC` arrancaba en 0 y así se bloquean todos al inicio. Corregido: arranca en 1.
+
+**Semáforos:** `mutexA = 0` · `mutexB = 1` · `mutexC = 0` · `mutexBoC = 1`
+
+| A | B | C |
+|---|---|---|
+| `while(1) {` | `while(1) {` | `while(1) {` |
+| &emsp;`wait(mutexA);` | &emsp;`wait(mutexB);` | &emsp;`wait(mutexC);` |
+| &emsp;`printf("A");` | &emsp;`wait(mutexBoC);` | &emsp;`wait(mutexBoC);` |
+| &emsp;`signal(mutexBoC);` | &emsp;`printf("B");` | &emsp;`printf("C");` |
+| `}` | &emsp;`signal(mutexA);` | &emsp;`signal(mutexA);` |
+|  | &emsp;`signal(mutexC);` | &emsp;`signal(mutexB);` |
+|  | `}` | `}` |
+
+**Solución 2** (A avisa a B y a C; cada uno necesita 2 avisos)
+
+> ⚠️ **Error en el apunte (04-18):** con B = 1 y C = 0 se bloquean todos al inicio. Corregido: B arranca en 2 y C en 1.
+
+**Semáforos:** `mutexA = 0` · `mutexB = 2` · `mutexC = 1`
+
+| A | B | C |
+|---|---|---|
+| `while(1) {` | `while(1) {` | `while(1) {` |
+| &emsp;`wait(mutexA);` | &emsp;`wait(mutexB);` | &emsp;`wait(mutexC);` |
+| &emsp;`printf("A");` | &emsp;`wait(mutexB);` | &emsp;`wait(mutexC);` |
+| &emsp;`signal(mutexB);` | &emsp;`printf("B");` | &emsp;`printf("C");` |
+| &emsp;`signal(mutexC);` | &emsp;`signal(mutexA);` | &emsp;`signal(mutexA);` |
+| `}` | `}` | `}` |
 
 </details>
 

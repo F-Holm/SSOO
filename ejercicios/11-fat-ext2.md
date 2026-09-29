@@ -280,7 +280,11 @@ Bloques: [0] datos archivo1  [1] datos archivo2 (1ra parte)  [2] datos archivo2 
 <details>
 <summary>Ver respuesta</summary>
 
-- a) Igual que el anterior: se puede (máx 16.522 KiB); hay que escribir **16.513 bloques** (16.384 de datos + 129 de punteros)
+- a) Punteros por bloque = 1024 / 8 = 128. Máx archivo = (10 + 128 + 128²) × 1 KiB = 16.522 KiB > 16.384 KiB (16 MiB) → **se puede**
+  - Bloques de datos: 16 MiB / 1 KiB = 16.384
+  - 10 por punteros directos → quedan 16.374; el IS cubre 128 (+1 bloque de punteros) → quedan 16.246
+  - Por el ID: 1 bloque de 1er nivel + ⌈16.246 / 128⌉ = 127 bloques de 2do nivel
+  - Total a escribir = 16.384 + 1 (IS) + 1 (ID) + 127 = **16.513 bloques**
 - b) **Softlink** (desde el FS original a la copia en otro FS). Hardlink no: los nros de inodo son locales a cada volumen
 
 </details>
@@ -334,17 +338,24 @@ Inodo 30 (s-file1.doc)              tipo symlink, links 1, tamaño 20  → bloqu
 
 </details>
 
-### [Final 2023-12-19] Mismo ejercicio con file1.doc de solo lectura, indicando también permisos — ✍️ respuesta propia (el PDF del final no trae solución)
+### [Final 2023-12-19] Graficar las estructuras de /home/user/file1.doc (solo lectura, contenido "hola") con un symlink y un hardlink, indicando permisos — ✍️ respuesta propia (el PDF del final no trae solución)
 
 **Consigna:** archivo de solo lectura /home/user/file1.doc con contenido "hola", un symbolic link /etc/s-file1.doc y un hard link /etc/h-file1.doc. Grafique entradas de directorio e inodos, indicando tipo de archivo, permisos y contador de hardlinks, e incluya los bloques de datos en uso
 
 <details>
 <summary>Ver respuesta</summary>
 
-- Igual al anterior, agregando permisos:
-  - Inodo 12 (file1.doc y h-file1.doc): `-r--r--r--` (444), links 2 → el hardlink tiene exactamente los mismos permisos (es el mismo inodo)
-  - Inodo 30 (s-file1.doc): `lrwxrwxrwx` (777), links 1 → sus permisos no importan, al accederlo se validan los del inodo 12 (solo lectura)
-  - Directorios: `drwxr-xr-x` (755)
+```
+Inodo 2  (/)          tipo dir, drwxr-xr-x, links 4  → bloque 100: [ . → 2 | .. → 2 | home → 10 | etc → 20 ]
+Inodo 10 (/home)      tipo dir, drwxr-xr-x, links 3  → bloque 101: [ . → 10 | .. → 2 | user → 11 ]
+Inodo 11 (/home/user) tipo dir, drwxr-xr-x, links 2  → bloque 102: [ . → 11 | .. → 10 | file1.doc → 12 ]
+Inodo 20 (/etc)       tipo dir, drwxr-xr-x, links 2  → bloque 103: [ . → 20 | .. → 2 | s-file1.doc → 30 | h-file1.doc → 12 ]
+
+Inodo 12 (file1.doc / h-file1.doc)  tipo regular, -r--r--r-- (444), links 2, tamaño 4   → bloque 200: "hola"
+Inodo 30 (s-file1.doc)              tipo symlink, lrwxrwxrwx (777), links 1, tamaño 20  → bloque 201: "/home/user/file1.doc"
+```
+- El hardlink no crea inodo: es otra entrada que apunta al inodo 12 (contador = 2) → tiene exactamente los mismos permisos (solo lectura)
+- El symlink es un inodo nuevo (30) cuyo contenido es la ruta del original. Sus permisos (777) no importan: al accederlo se validan los del inodo 12 (solo lectura)
 
 </details>
 
@@ -496,7 +507,14 @@ Modificados: bloque del directorio (700), tabla de inodos (100 y 101), bitmap de
 <details>
 <summary>Ver respuesta</summary>
 
-- Ver [resumen 11b](../resumenes/11b-fat-ext2-practica.md)
+Los enunciados de estos ejercicios no quedaron en los apuntes; estos son los resultados de la clase:
+
+- 2) a: 2^12 × 8 KiB = 2^25 B = 32 MiB (FAT12 con clusters de 8 KiB) — b: 32 KiB
+- 3) a: 8 GiB / 4 KiB = 2 Mi entradas — b: % FAT = 2 × T_FAT / T_disco = 2 × 2^23 / 2^33 = 1/2^9 = 0,1953 % — c: bits sin usar = 32 − log2(2 Mi) − 4 (reservados FAT32) = 32 − 21 − 4 = 7 bits
+- 4) a: 4 GiB / 2^16 = 2^16 B = 64 KiB — b: 64 KiB, 64 KiB y 16 bloques
+- 7) c: Σ (cant. punteros × tam bloque) con bloques de 1 KiB y 256 punteros por bloque = 12 KiB + 256 KiB + 64 MiB + 16 GiB 
+
+> ⚠️ **Error en el apunte (06-13):** figuraba "54 MiB"; es 256² KiB = 64 MiB.
 
 </details>
 
