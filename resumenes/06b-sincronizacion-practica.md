@@ -17,56 +17,90 @@
 
 ## Patrones
 ### Mutua exclusión
-```
-mutex = 1
-wait(mutex); SC; signal(mutex)
-```
+
+**Semáforos:** `mutex = 1`
+
+| Cada proceso |
+|---|
+| `wait(mutex);` |
+| `SC` |
+| `signal(mutex);` |
 
 ### Orden A → B
-```
-s = 0
-A: hacerA(); signal(s)
-B: wait(s); hacerB()
-```
+
+**Semáforos:** `s = 0`
+
+| A | B |
+|---|---|
+| `hacerA();` | `wait(s);` |
+| `signal(s);` | `hacerB();` |
 
 ### Alternancia A, B, A, B...
-```
-sA = 1; sB = 0
-A: wait(sA); A(); signal(sB)
-B: wait(sB); B(); signal(sA)
-```
+
+**Semáforos:** `sA = 1` · `sB = 0`
+
+| A | B |
+|---|---|
+| `while(1) {` | `while(1) {` |
+| &emsp;`wait(sA);` | &emsp;`wait(sB);` |
+| &emsp;`A();` | &emsp;`B();` |
+| &emsp;`signal(sB);` | &emsp;`signal(sA);` |
+| `}` | `}` |
 
 ### Máximo N en simultáneo (ej: "aprendizaje acepta 2 procesos")
-```
-cant = N
-wait(cant); usar(); signal(cant)
-```
+
+**Semáforos:** `cant = N`
+
+| Cada proceso |
+|---|
+| `wait(cant);` |
+| `usar();` |
+| `signal(cant);` |
 
 ### Máximo N pedidos pendientes (productor limitado)
-```
-limite = N; pedidos = 0
-Productor: wait(limite); pedir(); signal(pedidos)
-Consumidor: wait(pedidos); atender(); signal(limite)
-```
+
+**Semáforos:** `limite = N` · `pedidos = 0`
+
+| Productor | Consumidor |
+|---|---|
+| `while(1) {` | `while(1) {` |
+| &emsp;`wait(limite);` | &emsp;`wait(pedidos);` |
+| &emsp;`pedir();` | &emsp;`atender();` |
+| &emsp;`signal(pedidos);` | &emsp;`signal(limite);` |
+| `}` | `}` |
 
 ### Productor / consumidor con buffer de N
-```
-mutex = 1; lugar = N; cant = 0
-Productor: x = producir(); wait(lugar); wait(mutex); agregar(x); signal(mutex); signal(cant)
-Consumidor: wait(cant); wait(mutex); x = sacar(); signal(mutex); signal(lugar); consumir(x)
-```
+
+**Semáforos:** `mutex = 1` · `lugar = N` · `cant = 0`
+
+| Productor | Consumidor |
+|---|---|
+| `while(1) {` | `while(1) {` |
+| &emsp;`x = producir();` | &emsp;`wait(cant);` |
+| &emsp;`wait(lugar);` | &emsp;`wait(mutex);` |
+| &emsp;`wait(mutex);` | &emsp;`x = sacar();` |
+| &emsp;`agregar(x);` | &emsp;`signal(mutex);` |
+| &emsp;`signal(mutex);` | &emsp;`signal(lugar);` |
+| &emsp;`signal(cant);` | &emsp;`consumir(x);` |
+| `}` | `}` |
+
 - Buffer infinito: sacar `lugar`
 
 ### Un proceso que aparece varias veces en la secuencia (ej: A B A C A D ...)
 - Opción 1: "desenrollar" el while del proceso repetido (cada vuelta hace varias impresiones con distintos signals). Es válido, el while sigue siendo infinito
 - Opción 2: semáforo compartido + "tokens" de turno para los otros:
-```
-sA = 1; sOtro = 0; tB = 1; tC = 0; tD = 0
-A: wait(sA); A(); signal(sOtro)
-B: wait(tB); wait(sOtro); B(); signal(tC); signal(sA)
-C: wait(tC); wait(sOtro); C(); signal(tD); signal(sA)
-D: wait(tD); wait(sOtro); D(); signal(tB); signal(sA)
-```
+
+**Semáforos:** `sA = 1` · `sOtro = 0` · `tB = 1` · `tC = 0` · `tD = 0`
+
+| A | B | C | D |
+|---|---|---|---|
+| `while(1) {` | `while(1) {` | `while(1) {` | `while(1) {` |
+| &emsp;`wait(sA);` | &emsp;`wait(tB);` | &emsp;`wait(tC);` | &emsp;`wait(tD);` |
+| &emsp;`A();` | &emsp;`wait(sOtro);` | &emsp;`wait(sOtro);` | &emsp;`wait(sOtro);` |
+| &emsp;`signal(sOtro);` | &emsp;`B();` | &emsp;`C();` | &emsp;`D();` |
+| `}` | &emsp;`signal(tC);` | &emsp;`signal(tD);` | &emsp;`signal(tB);` |
+|  | &emsp;`signal(sA);` | &emsp;`signal(sA);` | &emsp;`signal(sA);` |
+|  | `}` | `}` | `}` |
 
 ### Esperar a dos eventos (ej: dos "tun" antes de "we")
 ```
@@ -78,25 +112,32 @@ Solución 1
 
 > ⚠️ **Error en el apunte (04-18):** `mutexBoC` arrancaba en 0 y así se bloquean todos al inicio. Corregido: arranca en 1.
 
-```
-mutexA = 0; mutexB = 1; mutexC = 0; mutexBoC = 1
+**Semáforos:** `mutexA = 0` · `mutexB = 1` · `mutexC = 0` · `mutexBoC = 1`
 
-A: wait(mutexA); printf("A"); signal(mutexBoC)
-B: wait(mutexB); wait(mutexBoC); printf("B"); signal(mutexA); signal(mutexC)
-C: wait(mutexC); wait(mutexBoC); printf("C"); signal(mutexA); signal(mutexB)
-```
+| A | B | C |
+|---|---|---|
+| `while(1) {` | `while(1) {` | `while(1) {` |
+| &emsp;`wait(mutexA);` | &emsp;`wait(mutexB);` | &emsp;`wait(mutexC);` |
+| &emsp;`printf("A");` | &emsp;`wait(mutexBoC);` | &emsp;`wait(mutexBoC);` |
+| &emsp;`signal(mutexBoC);` | &emsp;`printf("B");` | &emsp;`printf("C");` |
+| `}` | &emsp;`signal(mutexA);` | &emsp;`signal(mutexA);` |
+|  | &emsp;`signal(mutexC);` | &emsp;`signal(mutexB);` |
+|  | `}` | `}` |
 
 Solución 2 (A avisa a B y a C; cada uno necesita 2 avisos)
 
 > ⚠️ **Error en el apunte (04-18):** con B = 1 y C = 0 se bloquean todos al inicio. Corregido: B arranca en 2 y C en 1.
 
-```
-mutexA = 0; mutexB = 2; mutexC = 1
+**Semáforos:** `mutexA = 0` · `mutexB = 2` · `mutexC = 1`
 
-A: wait(mutexA); printf("A"); signal(mutexB); signal(mutexC)
-B: wait(mutexB); wait(mutexB); printf("B"); signal(mutexA)
-C: wait(mutexC); wait(mutexC); printf("C"); signal(mutexA)
-```
+| A | B | C |
+|---|---|---|
+| `while(1) {` | `while(1) {` | `while(1) {` |
+| &emsp;`wait(mutexA);` | &emsp;`wait(mutexB);` | &emsp;`wait(mutexC);` |
+| &emsp;`printf("A");` | &emsp;`wait(mutexB);` | &emsp;`wait(mutexC);` |
+| &emsp;`signal(mutexB);` | &emsp;`printf("B");` | &emsp;`printf("C");` |
+| &emsp;`signal(mutexC);` | &emsp;`signal(mutexA);` | &emsp;`signal(mutexA);` |
+| `}` | `}` | `}` |
 
 ## Semáforos en un Gantt
 - Si el enunciado da duraciones de wait/signal, la syscall se ejecuta entera aunque el semáforo quede negativo; el proceso se bloquea al terminar el wait

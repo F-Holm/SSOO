@@ -9,10 +9,13 @@
 
 - SC: código que accede/modifica recursos compartidos entre procesos/hilos donde puede haber condición de carrera
 - Condiciones: mutua exclusión, progreso, espera limitada, no suponer velocidad relativa
-```c
-wait()   { deshabilitar_interrupciones(); sem--; if (sem < 0) bloquear();   habilitar_interrupciones(); }
-signal() { deshabilitar_interrupciones(); sem++; if (sem <= 0) despertar(); habilitar_interrupciones(); }
-```
+
+| wait() | signal() |
+|---|---|
+| `deshabilitar_interrupciones();` | `deshabilitar_interrupciones();` |
+| `sem--;` | `sem++;` |
+| `if (sem < 0) bloquear();` | `if (sem <= 0) despertar();` |
+| `habilitar_interrupciones();` | `habilitar_interrupciones();` |
 
 </details>
 
@@ -61,9 +64,15 @@ signal() { deshabilitar_interrupciones(); sem++; if (sem <= 0) despertar(); habi
 <summary>Ver respuesta</summary>
 
 - Evitar la condición de carrera: el resultado depende del orden porque `a = a + 1` son varias instrucciones
-```
-int a = 0;          P1: c = a; c++; a = c;      P2: b = a; b--; a = b;
-```
+
+**Semáforos:** `int a = 0   // variable global`
+
+| P1 | P2 |
+|---|---|
+| `c = a;` | `b = a;` |
+| `c++;` | `b--;` |
+| `a = c;` | `a = b;` |
+
 - Si se intercalan, `a` puede terminar en 1 o −1 en vez de 0
 - Con mutex: `wait(mutex); ...SC...; signal(mutex)` en ambos
 - Deshabilitando interrupciones alrededor de la SC (solo en monoprocesador y en modo kernel)
@@ -115,11 +124,17 @@ int a = 0;          P1: c = a; c++; a = c;      P2: b = a; b--; a = b;
 <summary>Ver respuesta</summary>
 
 - Sin sincronizar: condición de carrera sobre el buffer, consumir de un buffer vacío, producir en uno lleno
-```
-s_lugar = 5 (contador); m_buffer = 1 (mutex); s_elementos = 0 (contador)
-Productor: x = producir(); wait(s_lugar); wait(m_buffer); agregar(x); signal(m_buffer); signal(s_elementos)
-Consumidor: wait(s_elementos); wait(m_buffer); y = extraer(); signal(m_buffer); signal(s_lugar); consumir(y)
-```
+
+**Semáforos:** `s_lugar = 5 (contador)` · `m_buffer = 1 (mutex)` · `s_elementos = 0 (contador)`
+
+| Productor | Consumidor |
+|---|---|
+| `x = producir();` | `wait(s_elementos);` |
+| `wait(s_lugar);` | `wait(m_buffer);` |
+| `wait(m_buffer);` | `y = extraer();` |
+| `agregar(x);` | `signal(m_buffer);` |
+| `signal(m_buffer);` | `signal(s_lugar);` |
+| `signal(s_elementos);` | `consumir(y);` |
 
 </details>
 
@@ -273,11 +288,18 @@ Consumidor: wait(s_elementos); wait(m_buffer); y = extraer(); signal(m_buffer); 
 </details>
 
 ### [Final 2022-12-21] Proceso con 2 hilos, semáforos con bloqueo. a) Orden que produzca deadlock y qué algoritmo podría causarlo b) ¿Afecta a otros procesos? ¿Y sin bloqueo? c) Corregir — ✅ solución oficial
-```
-sem1 = 1; sem2 = 0; mutex = 1        // acumulador: global del proceso
-Hilo 1: valor = cálculo(); wait(sem1); wait(mutex); acumulador += valor; signal(mutex); signal(sem2)
-Hilo 2: valor = cálculo(); wait(mutex); wait(sem2); acumulador += valor; signal(mutex); signal(sem1)
-```
+
+**Semáforos:** `sem1 = 1` · `sem2 = 0` · `mutex = 1`
+`acumulador` es una variable global del proceso
+
+| Hilo 1 | Hilo 2 |
+|---|---|
+| `valor = cálculo();` | `valor = cálculo();` |
+| `wait(sem1);` | `wait(mutex);` |
+| `wait(mutex);` | `wait(sem2);` |
+| `acumulador += valor;` | `acumulador += valor;` |
+| `signal(mutex);` | `signal(mutex);` |
+| `signal(sem2);` | `signal(sem1);` |
 
 <details>
 <summary>Ver respuesta</summary>
@@ -289,9 +311,12 @@ Hilo 2: valor = cálculo(); wait(mutex); wait(sem2); acumulador += valor; signal
 </details>
 
 ### [Final 2023-02-14] Sincronizar para imprimir permanentemente "Qué mirás bobo, andá pa allá, bobo" — ✍️ respuesta propia (el PDF del final no trae solución)
-```
-P1: while(true) printf("bobo")    P2: while(true) printf("Qué mirás")    P3: while(true) printf("andá pa allá")
-```
+
+| P1 | P2 | P3 |
+|---|---|---|
+| `while(true) {` | `while(true) {` | `while(true) {` |
+| &emsp;`printf("bobo")` | &emsp;`printf("Qué mirás")` | &emsp;`printf("andá pa allá")` |
+| `}` | `}` | `}` |
 
 **Consigna:**
 - a) Sincronice los procesos utilizando semáforos para que reproduzcan de manera permanente la famosa frase
@@ -301,64 +326,94 @@ P1: while(true) printf("bobo")    P2: while(true) printf("Qué mirás")    P3: w
 <summary>Ver respuesta</summary>
 
 a) Secuencia: QM, bobo, APA, bobo, QM, ...
-```
-sQM = 1; sAPA = 0; sBobo = 0; sFrase = 1   // sFrase: "se terminó el bobo anterior"
 
-P2: while(true){ wait(sQM);  wait(sFrase); printf("Qué mirás");    signal(sBobo); signal(sAPA) }
-P1: while(true){ wait(sBobo); printf("bobo"); signal(sFrase) }
-P3: while(true){ wait(sAPA); wait(sFrase); printf("andá pa allá"); signal(sBobo); signal(sQM) }
-```
+**Semáforos:** `sQM = 1` · `sAPA = 0` · `sBobo = 0` · `sFrase = 1   // "se terminó el bobo anterior"`
+
+| P1 (bobo) | P2 (qué mirás) | P3 (andá pa allá) |
+|---|---|---|
+| `while(true) {` | `while(true) {` | `while(true) {` |
+| &emsp;`wait(sBobo);` | &emsp;`wait(sQM);` | &emsp;`wait(sAPA);` |
+| &emsp;`printf("bobo");` | &emsp;`wait(sFrase);` | &emsp;`wait(sFrase);` |
+| &emsp;`signal(sFrase);` | &emsp;`printf("Qué mirás");` | &emsp;`printf("andá pa allá");` |
+| `}` | &emsp;`signal(sBobo);` | &emsp;`signal(sBobo);` |
+|  | &emsp;`signal(sAPA);` | &emsp;`signal(sQM);` |
+|  | `}` | `}` |
+
 - Después de "Qué mirás", P3 queda esperando sFrase hasta que P1 diga "bobo"; P2 no puede volver a entrar porque sQM está en 0 hasta que P3 termine
 
 b) P4 habilita la frase con `iniciar()`, máximo 5 pedidos pendientes (la frase se inicia al decir "Qué mirás")
-```
-limite = 5; pedidos = 0
-P4: while(true){ wait(limite); iniciar(); signal(pedidos) }
-P2: while(true){ wait(pedidos); wait(sQM); wait(sFrase); printf("Qué mirás"); signal(limite); signal(sBobo); signal(sAPA) }
-```
+
+**Semáforos:** `limite = 5` · `pedidos = 0` · `(más los del punto a)`
+
+| P2 (qué mirás) | P4 (iniciar) |
+|---|---|
+| `while(true) {` | `while(true) {` |
+| &emsp;`wait(pedidos);` | &emsp;`wait(limite);` |
+| &emsp;`wait(sQM);` | &emsp;`iniciar();` |
+| &emsp;`wait(sFrase);` | &emsp;`signal(pedidos);` |
+| &emsp;`printf("Qué mirás");` | `}` |
+| &emsp;`signal(limite);` |  |
+| &emsp;`signal(sBobo);` |  |
+| &emsp;`signal(sAPA);` |  |
+| `}` |  |
 
 </details>
 
 ### [Final 2023-03-07] "¿Qué mirás? bobo. Andá pa allá, bobo" + "Tranquilo Leo". Aprendizaje: hasta 2 procesos en simultáneo (oficial) — ✅ solución oficial
 > ⚠️ **Error en la consigna:** dice "se arma una simulación con 3 procesos" pero hay 4 (el cuarto dice "Tranquilo Leo").
 
-```
-P1: while(true){ aprendizaje(); printf("bobo") }
-P2: while(true){ aprendizaje(); printf(". Andá pa allá, ") }
-P3: while(true){ aprendizaje(); printf("¿Qué mirás? ") }
-P4: while(true){ aprendizaje(); printf("Tranquilo Leo") }
-```
+| P1 | P2 | P3 | P4 |
+|---|---|---|---|
+| `while(true) {` | `while(true) {` | `while(true) {` | `while(true) {` |
+| &emsp;`aprendizaje();` | &emsp;`aprendizaje();` | &emsp;`aprendizaje();` | &emsp;`aprendizaje();` |
+| &emsp;`printf("bobo");` | &emsp;`printf(". Andá pa allá, ");` | &emsp;`printf("¿Qué mirás? ");` | &emsp;`printf("Tranquilo Leo");` |
+| `}` | `}` | `}` | `}` |
+
 **Consigna:** sincronice los procesos con semáforos para que reproduzcan de manera permanente la frase "¿Qué mirás? bobo. Andá pa allá, bobo" seguida de "Tranquilo Leo", sabiendo que la etapa de aprendizaje solo acepta hasta dos procesos en simultáneo
 
 <details>
 <summary>Ver respuesta</summary>
 
-```
-cantAprendizaje = 2; semA = semC = 1; semB = semD = semE = 0
+**Semáforos:** `cantAprendizaje = 2` · `semA = 1` · `semC = 1` · `semB = 0` · `semD = 0` · `semE = 0`
 
-P1 (bobo):         wait(cantAprendizaje); aprendizaje(); signal(cantAprendizaje); wait(semB); printf("bobo"); signal(semC); signal(semE)
-P2 (andá pa allá): wait(cantAprendizaje); aprendizaje(); signal(cantAprendizaje); wait(semD); wait(semC); printf(". Andá pa allá, "); signal(semB)
-P3 (qué mirás):    wait(cantAprendizaje); aprendizaje(); signal(cantAprendizaje); wait(semA); wait(semC); printf("¿Qué mirás? "); signal(semB); signal(semD)
-P4 (tranquilo):    wait(cantAprendizaje); aprendizaje(); signal(cantAprendizaje); wait(semE); wait(semE); printf("Tranquilo Leo"); signal(semA)
-```
+| P1 (bobo) | P2 (andá pa allá) | P3 (qué mirás) | P4 (tranquilo) |
+|---|---|---|---|
+| `while(true) {` | `while(true) {` | `while(true) {` | `while(true) {` |
+| &emsp;`wait(cantAprendizaje);` | &emsp;`wait(cantAprendizaje);` | &emsp;`wait(cantAprendizaje);` | &emsp;`wait(cantAprendizaje);` |
+| &emsp;`aprendizaje();` | &emsp;`aprendizaje();` | &emsp;`aprendizaje();` | &emsp;`aprendizaje();` |
+| &emsp;`signal(cantAprendizaje);` | &emsp;`signal(cantAprendizaje);` | &emsp;`signal(cantAprendizaje);` | &emsp;`signal(cantAprendizaje);` |
+| &emsp;`wait(semB);` | &emsp;`wait(semD);` | &emsp;`wait(semA);` | &emsp;`wait(semE);` |
+| &emsp;`printf("bobo");` | &emsp;`wait(semC);` | &emsp;`wait(semC);` | &emsp;`wait(semE);` |
+| &emsp;`signal(semC);` | &emsp;`printf(". Andá pa allá, ");` | &emsp;`printf("¿Qué mirás? ");` | &emsp;`printf("Tranquilo Leo");` |
+| &emsp;`signal(semE);` | &emsp;`signal(semB);` | &emsp;`signal(semB);` | &emsp;`signal(semA);` |
+| `}` | `}` | &emsp;`signal(semD);` | `}` |
+|  |  | `}` |  |
+
 (todo dentro de `while(true)`; hay otras soluciones posibles, ej: con 3 semáforos para QM-B-APA-B)
 
 </details>
 
 ### [Final 2023-07-25 N°8] Productor agrega libremente, consumidor retira si hay al menos uno, sin condiciones de carrera. ChatGPT propuso: — ✍️ respuesta propia (el PDF del final no trae solución)
 **Consigna original:** dados estos pseudocódigos, cada uno de un hilo del mismo proceso:
-```
-LISTA;  // variable global
-P: while(TRUE){ agregar(LISTA, new_value()) }
-C: while(TRUE){ e = sacar(LISTA) }
-```
+`LISTA` es una variable global
+
+| P (productor) | C (consumidor) |
+|---|---|
+| `while(TRUE) {` | `while(TRUE) {` |
+| &emsp;`agregar(LISTA, new_value());` | &emsp;`e = sacar(LISTA);` |
+| `}` | `}` |
+
 modifíquelos de manera que el productor pueda agregar elementos libremente y el consumidor retire cuando exista al menos uno, evitando condiciones de carrera, usando solo semáforos. Esta fue la propuesta de ChatGPT:
 
-```
-lleno = 0; vacio = 1
-P: while(TRUE){ wait(vacio); agregar(LISTA, new_value()); signal(lleno) }
-C: while(TRUE){ wait(lleno); e = sacar(LISTA); signal(vacio) }
-```
+**Semáforos:** `lleno = 0` · `vacio = 1`
+
+| P (productor) | C (consumidor) |
+|---|---|
+| `while(TRUE) {` | `while(TRUE) {` |
+| &emsp;`wait(vacio);` | &emsp;`wait(lleno);` |
+| &emsp;`agregar(LISTA, new_value());` | &emsp;`e = sacar(LISTA);` |
+| &emsp;`signal(lleno);` | &emsp;`signal(vacio);` |
+| `}` | `}` |
 
 **Se pide:** analice la solución. ¿Se cumplieron los requisitos? ¿Existe algún problema de concurrencia? En caso de ser necesario, provea un nuevo pseudocódigo corregido
 
@@ -367,11 +422,18 @@ C: while(TRUE){ wait(lleno); e = sacar(LISTA); signal(vacio) }
 
 - No cumple: con `vacio = 1` el productor solo puede agregar un elemento y debe esperar a que el consumidor lo saque (alternancia estricta, buffer de 1). No hay condición de carrera por esa alternancia, pero no se pide eso
 - Corrección:
-```
-mutex = 1; lleno = 0
-P: while(TRUE){ v = new_value(); wait(mutex); agregar(LISTA, v); signal(mutex); signal(lleno) }
-C: while(TRUE){ wait(lleno); wait(mutex); e = sacar(LISTA); signal(mutex) }
-```
+
+**Semáforos:** `mutex = 1` · `lleno = 0`
+
+| P (productor) | C (consumidor) |
+|---|---|
+| `while(TRUE) {` | `while(TRUE) {` |
+| &emsp;`v = new_value();` | &emsp;`wait(lleno);` |
+| &emsp;`wait(mutex);` | &emsp;`wait(mutex);` |
+| &emsp;`agregar(LISTA, v);` | &emsp;`e = sacar(LISTA);` |
+| &emsp;`signal(mutex);` | &emsp;`signal(mutex);` |
+| &emsp;`signal(lleno);` | `}` |
+| `}` |  |
 
 </details>
 
@@ -381,30 +443,54 @@ C: while(TRUE){ wait(lleno); wait(mutex); e = sacar(LISTA); signal(mutex) }
 <summary>Ver respuesta</summary>
 
 Opción 1 (desenrollando PA):
-```
-sA = 1; sB = sC = sD = 0
-PA: while(1){ wait(sA); A(); signal(sB); wait(sA); A(); signal(sC); wait(sA); A(); signal(sD) }
-PB: while(1){ wait(sB); B(); signal(sA) }
-PC: while(1){ wait(sC); C(); signal(sA) }
-PD: while(1){ wait(sD); D(); signal(sA) }
-```
+
+**Semáforos:** `sA = 1` · `sB = 0` · `sC = 0` · `sD = 0`
+
+| PA | PB | PC | PD |
+|---|---|---|---|
+| `while(1) {` | `while(1) {` | `while(1) {` | `while(1) {` |
+| &emsp;`wait(sA);` | &emsp;`wait(sB);` | &emsp;`wait(sC);` | &emsp;`wait(sD);` |
+| &emsp;`A();` | &emsp;`B();` | &emsp;`C();` | &emsp;`D();` |
+| &emsp;`signal(sB);` | &emsp;`signal(sA);` | &emsp;`signal(sA);` | &emsp;`signal(sA);` |
+| &emsp;`wait(sA);` | `}` | `}` | `}` |
+| &emsp;`A();` |  |  |  |
+| &emsp;`signal(sC);` |  |  |  |
+| &emsp;`wait(sA);` |  |  |  |
+| &emsp;`A();` |  |  |  |
+| &emsp;`signal(sD);` |  |  |  |
+| `}` |  |  |  |
+
 Opción 2 (turnos entre B, C, D):
-```
-sA = 1; sOtro = 0; tB = 1; tC = 0; tD = 0
-PA: while(1){ wait(sA); A(); signal(sOtro) }
-PB: while(1){ wait(tB); wait(sOtro); B(); signal(tC); signal(sA) }
-PC: while(1){ wait(tC); wait(sOtro); C(); signal(tD); signal(sA) }
-PD: while(1){ wait(tD); wait(sOtro); D(); signal(tB); signal(sA) }
-```
+
+**Semáforos:** `sA = 1` · `sOtro = 0` · `tB = 1` · `tC = 0` · `tD = 0`
+
+| PA | PB | PC | PD |
+|---|---|---|---|
+| `while(1) {` | `while(1) {` | `while(1) {` | `while(1) {` |
+| &emsp;`wait(sA);` | &emsp;`wait(tB);` | &emsp;`wait(tC);` | &emsp;`wait(tD);` |
+| &emsp;`A();` | &emsp;`wait(sOtro);` | &emsp;`wait(sOtro);` | &emsp;`wait(sOtro);` |
+| &emsp;`signal(sOtro);` | &emsp;`B();` | &emsp;`C();` | &emsp;`D();` |
+| `}` | &emsp;`signal(tC);` | &emsp;`signal(tD);` | &emsp;`signal(tB);` |
+|  | &emsp;`signal(sA);` | &emsp;`signal(sA);` | &emsp;`signal(sA);` |
+|  | `}` | `}` | `}` |
 
 </details>
 
 ### [Final 2024-02-20] Red social "Z": N usuarios y un analizador. El sistema es lento y deja de funcionar. Encontrar al menos 3 errores/mejoras (sin resincronizar) — ✅ solución oficial
-```
-Usuario (N): wait(mutexPosts); post = generarPost(); postear(post, postsNuevos); signal(hayPosts); mostrarEnPantalla(post); signal(mutexPosts)
-Analizador (1): wait(mutexPosts); wait(hayPosts); post = obtenerPost(postsNuevos); resultado = procesar(post); guardarEnDisco(resultado); signal(mutexPosts)
-hayPosts = 0 (contador); mutexPosts = mutex
-```
+
+**Semáforos:** `hayPosts = 0 (contador)` · `mutexPosts = 1 (mutex)`
+`postsNuevos`: cola compartida con los nuevos posts a analizar
+
+| Usuario (N instancias) | Analizador (1 instancia) |
+|---|---|
+| `while(1) {` | `while(1) {` |
+| &emsp;`wait(mutexPosts);` | &emsp;`wait(mutexPosts);` |
+| &emsp;`post = generarPost();` | &emsp;`wait(hayPosts);` |
+| &emsp;`postear(post, postsNuevos);` | &emsp;`post = obtenerPost(postsNuevos);` |
+| &emsp;`signal(hayPosts);` | &emsp;`resultado = procesar(post);` |
+| &emsp;`mostrarEnPantalla(post);` | &emsp;`guardarEnDisco(resultado);` |
+| &emsp;`signal(mutexPosts);` | &emsp;`signal(mutexPosts);` |
+| `}` | `}` |
 
 <details>
 <summary>Ver respuesta</summary>
@@ -418,9 +504,15 @@ hayPosts = 0 (contador); mutexPosts = mutex
 </details>
 
 ### [Final 2024-07-23] "CrowdStrike": 4 instancias de Calculador (llegan en t0, 1, 2, 3). wait/signal = 4 ut, atómicas deshabilitando interrupciones; el resto de sentencias 2 ut. RR Q=3, 1 CPU, S = 2. Gantt y lista de bloqueados — ✍️ respuesta propia (el PDF del final no trae solución)
-```
-wait(S); total1++; total2++; signal(S)
-```
+
+**Semáforos:** `S = 2`
+
+| Calculador (4 instancias) |
+|---|
+| `wait(S);` |
+| `total1++;` |
+| `total2++;` |
+| `signal(S);` |
 
 <details>
 <summary>Ver respuesta</summary>
@@ -433,7 +525,6 @@ Supuestos: el wait se ejecuta entero (4 ut) aunque el semáforo quede negativo y
 | C2 |  | – | – | – | wait | wait | wait | wait | – | – | – | – | – | – | – | – | – | – | – | t1++ | t1++ | t2++ | – | – | – | – | – | t2++ | signal | signal | signal | signal | F |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
 | C3 |  |  | – | – | – | – | – | – | wait | wait | wait | wait | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | – | – | – | – | – | t1++ | t1++ | t2++ | – | – | – | t2++ | signal | signal | signal | signal | F |  |  |  |  |  |
 | C4 |  |  |  | – | – | – | – | – | – | – | – | – | wait | wait | wait | wait | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | bloq | – | – | – | t1++ | t1++ | t2++ | – | – | – | – | – | t2++ | signal | signal | signal | signal | F |
-
 
 (wait / t1++ / t2++ / signal = qué sentencia ejecuta; – = listo; bloq = bloqueado en el semáforo)
 
@@ -454,43 +545,49 @@ Supuestos: el wait se ejecuta entero (4 ut) aunque el semáforo quede negativo y
 ### [Final 2025-02-25] Imprimir "Tun, tun, We will we will rock you!" permanentemente. "tun" lo emite el baterista o el percusionista (cualquiera); ambos toman los palillos del mismo lugar (de a uno) — ✍️ respuesta propia (el PDF del final no trae solución)
 > ⚠️ **Aclaración de la consigna:** en el PDF la frase aparece como "We will we ~~will rock~~ you!" (con "will rock" tachado, parece un error de formato). Como el Vocalista 3 imprime "rock you!", se toma la frase completa: tun, tun, we, will, we, will, rock you!
 
-```
-Vocalista 1: while(1){ print("we") }
-Vocalista 2: while(1){ print("will") }
-Vocalista 3: while(1){ print("rock you!") }
-Baterista:     while(1){ tomar_palillo(); print("tun") }
-Percusionista: while(1){ tomar_palillo(); print("tun") }
-```
+| Vocalista 1 | Vocalista 2 | Vocalista 3 | Baterista | Percusionista |
+|---|---|---|---|---|
+| `while(1) {` | `while(1) {` | `while(1) {` | `while(1) {` | `while(1) {` |
+| &emsp;`print("we");` | &emsp;`print("will");` | &emsp;`print("rock you!");` | &emsp;`tomar_palillo();` | &emsp;`tomar_palillo();` |
+| `}` | `}` | `}` | &emsp;`print("tun");` | &emsp;`print("tun");` |
+|  |  |  | `}` | `}` |
+
 **Consigna:** sincronice solamente con semáforos para que se impriman los mensajes en ese orden de forma permanente
 
 <details>
 <summary>Ver respuesta</summary>
 
-```
-palillos = 1   // mutex
-tun = 2        // tuns habilitados en la vuelta
-tunListo = 0; will = 0; we2 = 0; rock = 0
+**Semáforos:** `palillos = 1 (mutex)` · `tun = 2 (tuns habilitados en la vuelta)` · `tunListo = 0` · `will = 0` · `we2 = 0` · `rock = 0`
 
-Baterista y Percusionista (igual):
-  while(1){ wait(tun); wait(palillos); tomar_palillo(); signal(palillos); print("tun"); signal(tunListo) }
-Vocalista 1:
-  while(1){ wait(tunListo); wait(tunListo); print("we"); signal(will); wait(we2); print("we"); signal(will) }
-Vocalista 2:
-  while(1){ wait(will); print("will"); signal(we2); wait(will); print("will"); signal(rock) }
-Vocalista 3:
-  while(1){ wait(rock); print("rock you!"); signal(tun); signal(tun) }
-```
+| Baterista y Percusionista (igual) | Vocalista 1 | Vocalista 2 | Vocalista 3 |
+|---|---|---|---|
+| `while(1) {` | `while(1) {` | `while(1) {` | `while(1) {` |
+| &emsp;`wait(tun);` | &emsp;`wait(tunListo);` | &emsp;`wait(will);` | &emsp;`wait(rock);` |
+| &emsp;`wait(palillos);` | &emsp;`wait(tunListo);` | &emsp;`print("will");` | &emsp;`print("rock you!");` |
+| &emsp;`tomar_palillo();` | &emsp;`print("we");` | &emsp;`signal(we2);` | &emsp;`signal(tun);` |
+| &emsp;`signal(palillos);` | &emsp;`signal(will);` | &emsp;`wait(will);` | &emsp;`signal(tun);` |
+| &emsp;`print("tun");` | &emsp;`wait(we2);` | &emsp;`print("will");` | `}` |
+| &emsp;`signal(tunListo);` | &emsp;`print("we");` | &emsp;`signal(rock);` |  |
+| `}` | &emsp;`signal(will);` | `}` |  |
+|  | `}` |  |  |
+
 - Traza: tun, tun → we → will → we → will → rock you! → se habilitan 2 tuns de nuevo
 - Los vocalistas 1 y 2 aparecen dos veces por vuelta → se "desenrolla" su loop
 
 </details>
 
 ### [Final 2025-07-29] Un productor, 6 consumidores y un notificador — ✍️ respuesta propia (el PDF del final no trae solución)
-```
-Productor (1):   a = producir(); wait(B); depositar(lista, a); signal(B); signal(C)
-Consumidor (6):  wait(C); wait(B); e = retirar(lista); signal(B); procesar(e); signal(D)
-Notificador (1): wait(D); wait(B); notificar(lista_mensajes); signal(B)
-```
+
+**Semáforos:** `(valores iniciales: los pide el ejercicio)`
+
+| Productor (1) | Consumidor (6) | Notificador (1) |
+|---|---|---|
+| `a = producir();` | `wait(C);` | `wait(D);` |
+| `wait(B);` | `wait(B);` | `wait(B);` |
+| `depositar(lista, a);` | `e = retirar(lista);` | `notificar(lista_mensajes);` |
+| `signal(B);` | `signal(B);` | `signal(B);` |
+| `signal(C);` | `procesar(e);` |  |
+|  | `signal(D);` |  |
 
 **Consigna:** (justificando cada respuesta)
 - a) ¿Qué semáforo limita la cantidad de elementos de la lista y cuál indica cuántos hay en un momento?
